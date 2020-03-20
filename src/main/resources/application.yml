@@ -1,0 +1,13 @@
+#配置端口号
+server:
+  port: 8181
+
+#mysql 数据源配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/longhui?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+
