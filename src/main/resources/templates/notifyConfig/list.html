@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>消息通知</title>
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+    <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css" rel="stylesheet">
+    <style type="text/css">/*解决引入模态框后页面抖动*/
+    body {
+        padding-right: 0 !important;
+    }
+    </style>
+</head>
+
+<body>
+<!--引入抽取的topbar-->
+<div th:replace="commons/bar::topbar"></div>
+
+<div class="container-fluid">
+    <span class="row">
+        <!--引入侧边栏-->
+        <div th:replace="commons/bar::#sidebar(activeUri='notifyConfig')"></div>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div>
+                <div style="float: left">
+		     		   <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#notifyConfigModal"
+                               onclick="toAdd()">
+                          配置添加
+                       </button>
+                </div>
+                <div style="float: right">
+                     <input type="text" class="form-control" placeholder="请输入通知配置名称" id="search_config"
+                            style="width:250px;height:30px;display:inline;">
+                    <button class="btn btn-sm btn-success" style="display:inline;margin-bottom: 7px;"
+                            onclick="searchConfig()">搜索</button>
+                </div>
+            </div>
+            <p></p>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm" id="config-table"><!--data-toggle="table"-->
+                    <thead>
+                    <tr>
+                        <th th:width="50" hidden="hidden">id</th>
+                        <th th:width="80">通知ID</th>
+                        <th th:width="120">名称</th>
+                        <th th:width="70">类型</th>
+                        <th th:width="120">主题</th>
+                        <th th:width="80">状态</th>
+                        <th th:width="500">内容</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="config:${pageInfo.list}">
+                        <td th:hidden="hidden" th:text="${config.id}"></td>
+                        <td th:text="${config.nid}"></td>
+                        <td th:text="${config.nname}"></td>
+                        <td th:text="${config.type}"></td>
+                        <td th:text="${config.subject}"></td>
+                        <td th:text="${config.status}==0?'禁用':'启用'"></td>
+                        <td th:text="${config.content}"></td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#notifyConfigModal"
+                                    th:onclick="update_config([[${config.nid}]])">编辑
+                            </button>
+                            <button class="btn btn-sm btn-danger deleteBtn"
+                                    th:onclick="delete_config([[${config.nid}]])">删除
+                            </button>
+                            <button class="btn btn-sm btn-warning"
+                                    th:onclick="disable_config([[${config.nid}]],0)">禁用
+                            </button>
+                            <button class="btn btn-sm btn-success"
+                                    th:onclick="disable_config([[${config.nid}]],1)">启用
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </span>
+</div>
+</div>
+
+<!-- 模态框（用户信息） -->
+<form method="post" name="user" class="form-horizontal" role="form" id="form-data" style="margin: 20px;">
+    <div class="modal fade" id="notifyConfigModal" tabindex="-1" role="dialog" aria-labelledby="notifyConfigModalLabel"
+         aria-hidden="true"
+         data-backdrop="static" data-keyboard="false"><!--控制点击模态框之外不消失-->
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:500px;">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="notifyConfigModalLabel">
+                        通知配置信息
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text" id="id" name="id" hidden>
+                    <div class="form-group">
+                        <div>
+                            <label class="form-inline"/>ID：&nbsp&nbsp&nbsp&nbsp
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" style="width:100%;" id="nid"
+                                       name="username" placeholder="请输入通知ID"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div id="pass_word">
+                            <label class="form-inline"/>名称：
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" style="width:100%;" name="nname"
+                                       id="nname" placeholder="请输入名称"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <label class="form-inline"/>类型：
+                            <div class="col-sm-10">
+                                <!--<input type="text" class="form-control" style="width:100%;" name="type"
+                                       id="type" placeholder="请输入类型"/></label>-->
+                                <select  class="form-control" style="width:100%;" id="type">
+                                    <option>email</option>
+                                    <option>sms</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <label class="form-inline"/>主题：
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" style="width:100%;" name="subject" id="subject"
+                                       placeholder="请输入主题"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <label class="form-inline"/>内容：
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" style="width:100%;" name="content" id="content"
+                                       placeholder="请输入内容"/></label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="margin: auto">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm();">提交</button>
+                    <span id="tip"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!--分页信息-->
+<div class="modal-footer" style="bottom: 20%;position: absolute;float: right;width: 100%;">
+    <ul class="pagination pull-right no-margin">
+        <div>
+            <a class="allpage"><b th:text="'当前第 '+ ${pageInfo.pageNum}+ ' 页'"></b></a>
+            <a class="allpage"><b th:text="'共 '+ ${pageInfo.pages}+ ' 页'"></b></a>
+            <a class="allpage"><b th:text="'共 '+ ${pageInfo.total}+ ' 条'"></b></a>
+            <a th:href="@{/notify/queryNotifyConfig}">首页</a>
+            <a th:href="@{/notify/queryNotifyConfig(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
+            <a th:href="@{/notify/queryNotifyConfig(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
+            <a th:href="@{/notify/queryNotifyConfig(pageNum=${pageInfo.pages})}">尾页</a>
+        </div>
+    </ul>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js"
+        th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<script type="text/javascript" src="asserts/js/popper.min.js"
+        th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+<script type="text/javascript" src="asserts/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+<!--引入bootstrap-table-->
+<script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/locale/bootstrap-table-zh-CN.js}"></script>
+
+<script>
+    var myUrl;
+
+    function toAdd() {
+        myUrl = '/notify/addNotifyConfig';
+        $('#nid').removeAttr("readonly");
+        $('#form-data input').val("");
+    }
+
+    //编辑
+    function update_config(nid) {
+        myUrl = '/notify/toUpdateNotify';
+        $.ajax({
+            url: myUrl,
+            data: {"nid": nid},
+            type: "post",
+            success: function (data) {
+                if (data) {
+                    var notifyConfig = data.notifyConfig;
+                    //赋值
+                    $('#id').val(notifyConfig.id);
+                    $('#nid').val(notifyConfig.nid);
+                    $('#nname').val(notifyConfig.nname);
+                    $('#type').val(notifyConfig.type);
+                    $('#subject').val(notifyConfig.subject);
+                    $('#content').val(notifyConfig.content);
+                    $('#nid').attr("readonly", "readonly");
+                    myUrl = '/notify/updateNotifyConfig';
+                }
+            }
+        });
+    }
+
+    //提交表单
+    function submitForm() {
+        var notifyConfig = {};
+        notifyConfig.nid = $('#nid').val();
+        notifyConfig.nname = $('#nname').val();
+        notifyConfig.type = $('#type').val();
+        notifyConfig.subject = $('#subject').val();
+        notifyConfig.content = $('#content').val();
+        debugger;
+        $.ajax({
+            url: myUrl,
+            data: JSON.stringify(notifyConfig),
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            async: true,
+            timeout: 50000,
+            success: function (data) {
+                if (data != null && data.msg == 'success') {
+                    location.reload();
+                    alert("操作成功！");
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function (data) {
+                alert("操作失败！")
+            }
+        });
+    }
+
+    //删除
+    function delete_config(nid) {
+        $.ajax({
+            url: '/notify/deleteNotifyConfig',
+            data: {"nid": nid},
+            type: "post",
+            success: function (data) {
+                if (data != null && data.msg == 'success') {
+                    location.reload();
+                    alert("操作成功！");
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function (data) {
+                alert("操作失败！");
+            }
+        });
+    }
+
+    //禁用,启用
+    function disable_config(nid, status) {
+        $.ajax({
+            url: '/notify/updateStatus',
+            data: {'nid': nid, 'status': status},
+            type: "post",
+            success: function (data) {
+                location.reload();
+            }
+        });
+    }
+
+    //搜索框查询配置信息
+    function searchConfig() {
+        var name = $("#search_config").val();
+        window.location.href = "/notify/queryNotifyConfig?nname=" + name;
+    }
+
+</script>
+</body>
+</html>

@@ -1,13 +1,23 @@
-#ÅäÖÃ¶Ë¿ÚºÅ
+#ç«¯å£å·
 server:
   port: 8181
 
-#mysql Êı¾İÔ´ÅäÖÃ
+#mysql é…ç½®æ•°æ®æº
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/longhui?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/ms-notify?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
 
+#é…ç½®mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wl.msnotify.entity
 
+#pageHelper åˆ†é¡µæ’ä»¶
+pagehelper:
+  helper-dialect: mysql
+  params: count=countSql
+  reasonable: true
+  support-methods-arguments: true

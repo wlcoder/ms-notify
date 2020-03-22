@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wl.msnotify.mapper.NotifyConfigMapper">
+    <resultMap id="BaseResultMap" type="com.wl.msnotify.entity.NotifyConfig">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="nid" property="nid" jdbcType="VARCHAR"/>
+        <result column="nname" property="nname" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="subject" property="subject" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, nid, nname, type, subject, content, status
+  </sql>
+
+    <select id="findNotifyById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from notify_config
+        where nid = #{nid}
+    </select>
+
+    <select id="findAllNotify" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from notify_config
+        <where>
+            <if test="nname != null">
+                nname like '%${nname}%'
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteNotify" parameterType="java.lang.String">
+    delete from notify_config
+    where nid = #{nid}
+  </delete>
+
+    <insert id="insertNotify" parameterType="com.wl.msnotify.entity.NotifyConfig">
+    insert into notify_config (nid, nname, type, subject, content, status)
+    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+
+    <update id="updateNotify" parameterType="com.wl.msnotify.entity.NotifyConfig">
+        update notify_config
+        <set>
+            <if test="nname != null">
+                nname = #{nname,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where nid = #{nid,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateStatus" parameterType="java.lang.Long">
+        update notify_config
+        <set>
+            status =#{status}
+        </set>
+        where nid = #{nid}
+    </update>
+
+</mapper>
