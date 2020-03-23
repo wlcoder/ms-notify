@@ -3,6 +3,7 @@ package com.wl.msnotify.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.NotifyConfig;
 import com.wl.msnotify.entity.NotifyHistory;
 import com.wl.msnotify.enums.CommonEnum;
@@ -34,6 +35,7 @@ public class NotifyController {
     /*
      * 查询通知配置
      */
+    @TimeConsumeAnnotation
     @RequestMapping(value = "/queryNotifyConfig")
     public String queryNotifyConfig(Model model, @RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, String nname) {
         Page page = PageHelper.startPage(pageNum, 5, "id desc");
@@ -127,6 +129,7 @@ public class NotifyController {
     /*
      * 查询通知历史
      */
+    @TimeConsumeAnnotation
     @RequestMapping(value = "/queryNotifyHistory")
     public String queryNotifyHistory(Model model, @RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, String nname) {
         Page page = PageHelper.startPage(pageNum, 5, "id desc");

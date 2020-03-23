@@ -96,6 +96,16 @@
             <artifactId>bootstrap-table</artifactId>
             <version>1.9.1</version>
         </dependency>
+        <!--引入aop aspectj-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
 
     </dependencies>
 
