@@ -18,4 +18,6 @@ public class NotifyConfig {
 
     private Integer status;
 
+    private String cron;
+
 }

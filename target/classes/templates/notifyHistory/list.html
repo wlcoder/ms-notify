@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>消息通知</title>
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+    <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css" rel="stylesheet">
+    <style type="text/css">/*解决引入模态框后页面抖动*/
+    body {
+        padding-right: 0 !important;
+    }
+    </style>
+</head>
+
+<body>
+<!--引入抽取的topbar-->
+<div th:replace="commons/bar::topbar"></div>
+
+<div class="container-fluid">
+    <span class="row">
+        <!--引入侧边栏-->
+        <div th:replace="commons/bar::#sidebar(activeUri='notifyHistory')"></div>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div>
+
+                <div style="float: left">
+                     <input type="text" class="form-control" placeholder="请输入通知历史名称" id="search_config"
+                            style="width:250px;height:30px;display:inline;">
+                    <button class="btn btn-sm btn-success" style="display:inline;margin-bottom: 7px;"
+                            onclick="searchHistory()">搜索</button>
+                </div>
+            </div>
+            <p></p>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm" id="history-table">
+                    <thead>
+                    <tr>
+                        <th th:width="50" hidden="hidden">id</th>
+                        <th th:width="80">通知ID</th>
+                        <th th:width="120">名称</th>
+                        <th th:width="80">类型</th>
+                        <th th:width="150">主题</th>
+                        <th th:width="80">状态</th>
+                        <th th:width="100">接受者</th>
+                        <th th:width="120">发送时间</th>
+                        <th th:width="500">内容</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="history:${pageInfo.list}">
+                        <td th:hidden="hidden" th:text="${history.id}"></td>
+                        <td th:text="${history.nid}"></td>
+                        <td th:text="${history.nname}"></td>
+                        <td th:text="${history.type}"></td>
+                        <td th:text="${history.subject}"></td>
+                        <td th:text="${history.status}==0?'失败':'成功'"></td>
+                        <td th:text="${history.receiver}"></td>
+                        <td th:text="${#dates.format(history.senddate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${history.content}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </span>
+</div>
+</div>
+
+<!--分页信息-->
+<div class="modal-footer" style="bottom: 20%;position: absolute;float: right;width: 100%;">
+    <ul class="pagination pull-right no-margin">
+        <div>
+            <a class="allpage"><b th:text="'当前第 '+ ${pageInfo.pageNum}+ ' 页'"></b></a>
+            <a class="allpage"><b th:text="'共 '+ ${pageInfo.pages}+ ' 页'"></b></a>
+            <a class="allpage"><b th:text="'共 '+ ${pageInfo.total}+ ' 条'"></b></a>
+            <a th:href="@{/notify/queryNotifyHistory}">首页</a>
+            <a th:href="@{/notify/queryNotifyHistory(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
+            <a th:href="@{/notify/queryNotifyHistory(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
+            <a th:href="@{/notify/queryNotifyHistory(pageNum=${pageInfo.pages})}">尾页</a>
+        </div>
+    </ul>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js"
+        th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<script type="text/javascript" src="asserts/js/popper.min.js"
+        th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+<script type="text/javascript" src="asserts/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+<!--引入bootstrap-table-->
+<script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/locale/bootstrap-table-zh-CN.js}"></script>
+
+<script>
+
+    //搜索框查询通知历史信息
+    function searchHistory() {
+        var name = $("#search_config").val();
+        window.location.href = "/notify/queryNotifyHistory?nname=" + name;
+    }
+
+</script>
+</body>
+</html>

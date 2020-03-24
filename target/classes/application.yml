@@ -1,0 +1,23 @@
+#端口号
+server:
+  port: 8181
+
+#mysql 配置数据源
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ms-notify?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+#配置mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wl.msnotify.entity
+
+#pageHelper 分页插件
+pagehelper:
+  helper-dialect: mysql
+  params: count=countSql
+  reasonable: true
+  support-methods-arguments: true

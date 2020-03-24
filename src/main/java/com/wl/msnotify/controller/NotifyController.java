@@ -10,6 +10,7 @@ import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.service.NotifyConfigService;
 import com.wl.msnotify.service.NotifyHistoryService;
 import com.wl.msnotify.util.BaseException;
+import com.wl.msnotify.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,16 +51,14 @@ public class NotifyController {
      */
     @ResponseBody
     @RequestMapping(value = "/addNotifyConfig")
-    public Map<String, Object> addNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
-        Map<String, Object> map = new HashMap<>();
+    public ResultUtil addNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
         try {
             notifyConfig.setStatus(CommonEnum.TRUE.getValue());
             notifyConfigService.insertNotify(notifyConfig);
-            map.put("msg", "success");
         } catch (BaseException e) {
-            map.put("msg", e.getMessage());
+            return ResultUtil.error().data("msg", e.getMessage()).message("新增配置失败");
         }
-        return map;
+        return ResultUtil.ok().data("msg", "success").message("新增配置成功");
     }
 
     /*
@@ -67,11 +66,9 @@ public class NotifyController {
      */
     @ResponseBody
     @RequestMapping("/toUpdateNotify")
-    public Map toUpdateNotify(@RequestParam("nid") String nid) {
+    public ResultUtil toUpdateNotify(@RequestParam("nid") String nid) {
         NotifyConfig notifyConfig = notifyConfigService.findNotifyById(nid);
-        Map<String, NotifyConfig> map = new HashMap<>();
-        map.put("notifyConfig", notifyConfig);
-        return map;
+        return ResultUtil.ok().data("msg", notifyConfig).message("跳转到修改页面");
     }
 
     /*
@@ -80,16 +77,13 @@ public class NotifyController {
      */
     @ResponseBody
     @RequestMapping(value = "/updateNotifyConfig")
-    public Map updateNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
-        Map<String, Object> map = new HashMap<>();
+    public ResultUtil updateNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
         try {
             notifyConfigService.updateNotify(notifyConfig);
-            map.put("msg", "success");
         } catch (BaseException e) {
-            map.put("msg", e.getMessage());
-            return map;
+            return ResultUtil.error().data("msg", e.getMessage()).message("修改配置失败");
         }
-        return map;
+        return ResultUtil.ok().data("msg", "success").message("新增配置成功");
     }
 
     /*
@@ -97,15 +91,13 @@ public class NotifyController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteNotifyConfig")
-    public Map<String, Object> deleteNotifyConfig(String nid) {
-        Map<String, Object> map = new HashMap<>();
+    public ResultUtil deleteNotifyConfig(String nid) {
         try {
             notifyConfigService.deleteNotify(nid);
-            map.put("msg", "success");
         } catch (BaseException e) {
-            map.put("msg", e.getMessage());
+            return ResultUtil.error().data("msg", e.getMessage()).message("删除配置失败");
         }
-        return map;
+        return ResultUtil.ok().data("msg", "success").message("删除配置成功");
     }
 
     /*
@@ -114,16 +106,14 @@ public class NotifyController {
 
     @ResponseBody
     @RequestMapping(value = "/updateStatus")
-    public Map<String, Object> updateStatus(String nid, int status) {
-        Map<String, Object> map = new HashMap<>();
+    public ResultUtil updateStatus(String nid, int status) {
+        String config_status = (status == 1 ? "启用" : "禁用");
         try {
             notifyConfigService.updateStatus(nid, status);
-            map.put("msg", "success");
         } catch (BaseException e) {
-            map.put("msg", "修改状态失败！");
-            return map;
+            return ResultUtil.error().data("msg", e.getMessage()).message(config_status + "配置失败");
         }
-        return map;
+        return ResultUtil.ok().data("msg", "success").message(config_status + "配置成功");
     }
 
     /*
@@ -138,6 +128,5 @@ public class NotifyController {
         model.addAttribute("pageInfo", pageInfo);
         return "notifyHistory/list";
     }
-
 
 }
