@@ -19,7 +19,7 @@ public class InitServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-      //  initEmailJob();
+        initEmailJob();
     }
 
     private void initEmailJob() {
