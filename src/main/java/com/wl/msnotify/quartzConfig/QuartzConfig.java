@@ -24,7 +24,7 @@ public class QuartzConfig {
     public CronTriggerFactoryBean createExportDailyTrigger(MethodInvokingJobDetailFactoryBean jobDetail) {
         CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
         tigger.setJobDetail(jobDetail.getObject());
-        tigger.setCronExpression("0/5 * * * * ? ");
+        tigger.setCronExpression("0/30 * * * * ? ");
         tigger.setName("sendEmail");
         return tigger;
     }

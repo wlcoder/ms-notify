@@ -11,7 +11,7 @@
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, nid, nname, type, subject, content, status,cron
+    id, nid, nname, type, subject, content, status,cron,email
   </sql>
 
     <select id="findNotifyById" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -38,8 +38,8 @@
   </delete>
 
     <insert id="insertNotify" parameterType="com.wl.msnotify.entity.NotifyConfig">
-    insert into notify_config (nid, nname, type, subject, content, status,cron)
-    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{cron,jdbcType=VARCHAR})
+    insert into notify_config (nid, nname, type, subject, content, status,cron,email)
+    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{cron,jdbcType=VARCHAR}), #{email,jdbcType=VARCHAR})
   </insert>
 
     <update id="updateNotify" parameterType="com.wl.msnotify.entity.NotifyConfig">
@@ -61,7 +61,10 @@
                 status = #{status,jdbcType=INTEGER},
             </if>
             <if test="cron != null">
-                status = #{cron,jdbcType=VARCHAR},
+                cron = #{cron,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
             </if>
         </set>
         where nid = #{nid,jdbcType=INTEGER}

@@ -20,4 +20,6 @@ public class NotifyConfig {
 
     private String cron;
 
+    private String email;
+
 }

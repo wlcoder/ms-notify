@@ -9,6 +9,17 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+  mail:
+    #邮件协议smtp
+    host: smtp.qq.com
+    #发送者的邮件的用户名
+    username: 1608550717@qq.com
+    #使用的编码
+    default-encoding: utf-8
+    #移动端客户授权码
+    password: cctitlbsnklffjhd
+    port: 465
+    properties.mail.smtp.ssl.enable: true
 
 #配置mybatis
 mybatis:
@@ -21,3 +32,6 @@ pagehelper:
   params: count=countSql
   reasonable: true
   support-methods-arguments: true
+
+
+

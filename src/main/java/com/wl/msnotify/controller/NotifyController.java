@@ -64,7 +64,7 @@ public class NotifyController {
     @RequestMapping("/toUpdateNotify")
     public ResultUtil toUpdateNotify(@RequestParam("nid") String nid) {
         NotifyConfig notifyConfig = notifyConfigService.findNotifyById(nid);
-        return ResultUtil.ok().data("msg", notifyConfig).message("跳转到修改页面");
+        return ResultUtil.ok().data("data", notifyConfig).message("跳转到修改页面");
     }
 
     /*
@@ -79,7 +79,7 @@ public class NotifyController {
         } catch (BaseException e) {
             return ResultUtil.error().data("msg", e.getMessage()).message("修改配置失败");
         }
-        return ResultUtil.ok().data("msg", "success").message("新增配置成功");
+        return ResultUtil.ok().data("msg", "success").message("修改配置成功");
     }
 
     /*

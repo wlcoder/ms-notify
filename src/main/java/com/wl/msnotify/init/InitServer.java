@@ -35,6 +35,7 @@ public class InitServer implements ApplicationRunner {
      * @param notifyConfig
      */
     private void addJob(NotifyConfig notifyConfig) {
+
     }
 
 }
