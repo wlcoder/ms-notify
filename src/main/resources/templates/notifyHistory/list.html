@@ -43,13 +43,14 @@
                     <tr>
                         <th th:width="50" hidden="hidden">id</th>
                         <th th:width="80">通知ID</th>
-                        <th th:width="120">名称</th>
+                        <th th:width="100">名称</th>
                         <th th:width="80">类型</th>
                         <th th:width="150">主题</th>
                         <th th:width="80">状态</th>
+                        <th th:width="100">发送者</th>
                         <th th:width="100">接受者</th>
-                        <th th:width="150">发送时间</th>
-                        <th th:width="500">内容</th>
+                        <th th:width="120">发送时间</th>
+                        <th th:width="400">内容</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -60,6 +61,7 @@
                         <td th:text="${history.type}"></td>
                         <td th:text="${history.subject}"></td>
                         <td th:text="${history.status}==0?'失败':'成功'"></td>
+                        <td th:text="${history.sender}"></td>
                         <td th:text="${history.receiver}"></td>
                         <td th:text="${#dates.format(history.senddate, 'yyyy-MM-dd')}"></td>
                         <td th:text="${history.content}"></td>

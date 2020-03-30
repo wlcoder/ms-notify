@@ -2,13 +2,27 @@
 server:
   port: 8181
 
-#mysql 配置数据源
 spring:
+  #mysql 配置数据源
   datasource:
     url: jdbc:mysql://localhost:3306/ms-notify?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+  #配置redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: root123456
+    jedis:
+      pool:
+        max-active: 50
+        max-wait: 3000
+        max-idle: 20
+        min-idle: 2
+    timeout: 5000
+
+  #配置mail
   mail:
     #邮件协议smtp
     host: smtp.qq.com
@@ -19,7 +33,14 @@ spring:
     #移动端客户授权码
     password: cctitlbsnklffjhd
     port: 465
+    test-connection: true
     properties.mail.smtp.ssl.enable: true
+#    debugger: true
+#    smtp:
+#     timeout: 1000
+#     socketFactory:
+#       port: 465
+
 
 #配置mybatis
 mybatis:
