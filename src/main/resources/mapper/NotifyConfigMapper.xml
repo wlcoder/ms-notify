@@ -39,7 +39,7 @@
 
     <insert id="insertNotify" parameterType="com.wl.msnotify.entity.NotifyConfig">
     insert into notify_config (nid, nname, type, subject, content, status,cron,email)
-    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{cron,jdbcType=VARCHAR}), #{email,jdbcType=VARCHAR})
+    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{cron,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR})
   </insert>
 
     <update id="updateNotify" parameterType="com.wl.msnotify.entity.NotifyConfig">
