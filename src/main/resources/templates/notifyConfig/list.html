@@ -52,7 +52,6 @@
                         <th th:width="70">类型</th>
                         <th th:width="120">主题</th>
                         <th th:width="80">状态</th>
-                        <th th:width="120">cron表达式</th>
                         <th th:width="100">email</th>
                         <th th:width="400">内容</th>
                         <th>操作</th>
@@ -66,8 +65,7 @@
                         <td th:text="${config.type}"></td>
                         <td th:text="${config.subject}"></td>
                         <td th:text="${config.status}==0?'禁用':'启用'"></td>
-                        <td th:text="${config.cron}"></td>
-                         <td th:text="${config.email}"></td>
+                        <td th:text="${config.email}"></td>
                         <td th:text="${config.content}"></td>
                         <td>
                             <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#notifyConfigModal"
@@ -145,15 +143,6 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" style="width:100%;" name="subject" id="subject"
                                        placeholder="请输入主题"/></label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <label class="form-inline"/>CRON：
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" style="width:100%;" name="cron" id="cron"
-                                       placeholder="请输入cron表达式"/></label>
                             </div>
                         </div>
                     </div>
@@ -241,7 +230,6 @@
                     $('#type').val(notifyConfig.type);
                     $('#subject').val(notifyConfig.subject);
                     $('#content').val(notifyConfig.content);
-                    $('#cron').val(notifyConfig.cron);
                     $('#email').val(notifyConfig.email);
                     $('#nid').attr("readonly", "readonly");
                     myUrl = '/notify/updateNotifyConfig';
@@ -258,7 +246,6 @@
         notifyConfig.type = $('#type').val();
         notifyConfig.subject = $('#subject').val();
         notifyConfig.content = $('#content').val();
-        notifyConfig.cron = $('#cron').val();
         notifyConfig.email = $('#email').val();
         $.ajax({
             url: myUrl,
