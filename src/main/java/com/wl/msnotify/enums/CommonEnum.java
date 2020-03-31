@@ -1,5 +1,8 @@
 package com.wl.msnotify.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum CommonEnum {
     FALSE(0),
     TRUE(1);
@@ -10,7 +13,4 @@ public enum CommonEnum {
         this.value = value;
     }
 
-    public Integer getValue() {
-        return value;
-    }
 }

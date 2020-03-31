@@ -1,5 +1,8 @@
 package com.wl.msnotify.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum NotifyTypeEnum {
     EMAIL("email"),
     SMS("sms");
@@ -10,7 +13,4 @@ public enum NotifyTypeEnum {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }
