@@ -3,7 +3,6 @@ package com.wl.msnotify.quartzConfig;
 import com.alibaba.fastjson.JSONObject;
 import com.wl.msnotify.entity.NotifyConfig;
 import com.wl.msnotify.factory.NotifyStrategyFactory;
-import com.wl.msnotify.service.NotifyConfigService;
 import com.wl.msnotify.service.NotifySendService;
 import com.wl.msnotify.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +19,7 @@ import java.util.List;
 @Slf4j
 public class ScheduleTask {
     @Autowired
-    private NotifySendService notifySendService;
-    @Autowired
     private NotifyStrategyFactory notifyStrategyFactory;
-    @Autowired
-    private NotifyConfigService notifyConfigService;
     @Autowired
     private RedisUtil redisUtil;
 

@@ -1,6 +1,5 @@
 package com.wl.msnotify.controller;
 
-import com.wl.msnotify.util.ResultUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

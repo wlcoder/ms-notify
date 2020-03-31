@@ -1,8 +1,6 @@
 package com.wl.msnotify.service.impl;
 
-import com.wl.msnotify.entity.NotifyConfig;
 import com.wl.msnotify.entity.NotifyHistory;
-import com.wl.msnotify.mapper.NotifyConfigMapper;
 import com.wl.msnotify.mapper.NotifyHistoryMapper;
 import com.wl.msnotify.service.NotifyHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,6 @@ import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.NotifyConfig;
 import com.wl.msnotify.entity.NotifyHistory;
 import com.wl.msnotify.enums.CommonEnum;
-import com.wl.msnotify.mapper.NotifyConfigMapper;
 import com.wl.msnotify.mapper.NotifyHistoryMapper;
 import com.wl.msnotify.service.NotifySendService;
 import com.wl.msnotify.util.BaseException;
@@ -25,12 +24,9 @@ import java.util.Date;
 @Slf4j
 public class NotifyEmailSendServiceImpl implements NotifySendService {
     @Autowired
-    private NotifyConfigMapper notifyConfigMapper;
-    @Autowired
     private NotifyHistoryMapper notifyHistoryMapper;
     @Autowired
     private EmailUtil emailUtil;
-
     @Value("${spring.mail.username}")
     private String fromEmail;
 
