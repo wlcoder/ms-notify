@@ -6,7 +6,6 @@ import com.github.pagehelper.PageInfo;
 import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.NotifyConfig;
 import com.wl.msnotify.entity.NotifyHistory;
-import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.service.NotifyConfigService;
 import com.wl.msnotify.service.NotifyHistoryService;
 import com.wl.msnotify.util.BaseException;
@@ -49,7 +48,6 @@ public class NotifyController {
     @RequestMapping(value = "/addNotifyConfig")
     public ResultUtil addNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
         try {
-            notifyConfig.setStatus(CommonEnum.TRUE.getValue());
             notifyConfigService.insertNotify(notifyConfig);
         } catch (BaseException e) {
             return ResultUtil.error().data("msg", e.getMessage()).message("新增配置失败");

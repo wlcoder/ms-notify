@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>消息通知</title>
+    <title>任务调度</title>
     <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
     <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
     <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
@@ -25,60 +25,50 @@
 <div class="container-fluid">
     <span class="row">
         <!--引入侧边栏-->
-        <div th:replace="commons/bar::#sidebar(activeUri='notifyConfig')"></div>
+        <div th:replace="commons/bar::#sidebar(activeUri='jobDetail')"></div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div>
-                <div style="float: left">
-		     		   <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#notifyConfigModal"
-                               onclick="toAdd()">
-                          配置添加
+                <div style="float: left;padding-bottom: 10px">
+		     		   <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#jobModal"
+                               onclick="toAdd()">任务添加
                        </button>
                 </div>
-                <div style="float: right">
-                     <input type="text" class="form-control" placeholder="请输入通知配置名称" id="search_config"
-                            style="width:250px;height:30px;display:inline;">
-                    <button class="btn btn-sm btn-success" style="display:inline;margin-bottom: 7px;"
-                            onclick="searchConfig()">搜索</button>
-                </div>
             </div>
-            <p></p>
             <div class="table-responsive">
                 <table class="table table-striped table-sm" id="config-table"><!--data-toggle="table"-->
                     <thead>
                     <tr>
-                        <th th:width="10" hidden="hidden">id</th>
-                        <th th:width="80">通知ID</th>
-                        <th th:width="100">名称</th>
-                        <th th:width="80">类型</th>
-                        <th th:width="120">主题</th>
+                        <th th:width="50" hidden="hidden">id</th>
+                        <th th:width="120">任务名称</th>
+                        <th th:width="100">任务分组</th>
+                        <th th:width="150">任务类名</th>
+                        <th th:width="150">cron表达式</th>
                         <th th:width="80">状态</th>
-                        <th th:width="150">邮箱</th>
-                        <th th:width="400">内容</th>
+                        <th th:width="250">任务描述</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="config:${pageInfo.list}">
-                        <td th:hidden="hidden" th:text="${config.id}"></td>
-                        <td th:text="${config.nid}"></td>
-                        <td th:text="${config.nname}"></td>
-                        <td th:text="${config.type}"></td>
-                        <td th:text="${config.subject}"></td>
-                        <td th:text="${config.status}==0?'禁用':'启用'"></td>
-                        <td th:text="${config.email}"></td>
-                        <td th:text="${config.content}"></td>
+                    <tr th:each="job:${pageInfo.list}">
+                        <td th:hidden="hidden" th:text="${job.id}"></td>
+                        <td th:text="${job.jobName}"></td>
+                        <td th:text="${job.jobGroup}"></td>
+                        <td th:text="${job.jobClassName}"></td>
+                        <td th:text="${job.jobCron}"></td>
+                        <td th:text="${job.status}==0?'禁用':'启用'"></td>
+                        <td th:text="${job.description}"></td>
                         <td>
-                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#notifyConfigModal"
-                                    th:onclick="update_config([[${config.nid}]])">编辑
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#jobCronModal"
+                                    th:onclick="toUpdate([[${job.id}]])">编辑
                             </button>
                             <button class="btn btn-sm btn-danger deleteBtn"
-                                    th:onclick="delete_config([[${config.nid}]])">删除
+                                    th:onclick="delete_job([[${job.id}]])">删除
                             </button>
                             <button class="btn btn-sm btn-warning"
-                                    th:onclick="disable_config([[${config.nid}]],0)">禁用
+                                    th:onclick="disable_job([[${job.id}]],0)">禁用
                             </button>
                             <button class="btn btn-sm btn-success"
-                                    th:onclick="disable_config([[${config.nid}]],1)">启用
+                                    th:onclick="disable_job([[${job.id}]],1)">启用
                             </button>
                         </td>
                     </tr>
@@ -90,16 +80,16 @@
 </div>
 </div>
 
-<!-- 模态框（用户信息） -->
-<form method="post" name="user" class="form-horizontal" role="form" id="form-data" style="margin: 20px;">
-    <div class="modal fade" id="notifyConfigModal" tabindex="-1" role="dialog" aria-labelledby="notifyConfigModalLabel"
+<!-- 模态框（任务信息） -->
+<form method="post" name="job" class="form-horizontal" role="form" id="form-data" style="margin: 20px;">
+    <div class="modal fade" id="jobModal" tabindex="-1" role="dialog" aria-labelledby="jobModalLabel"
          aria-hidden="true"
          data-backdrop="static" data-keyboard="false"><!--控制点击模态框之外不消失-->
         <div class="modal-dialog">
-            <div class="modal-content" style="width:500px;">
+            <div class="modal-content" style="width:600px;">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="notifyConfigModalLabel">
-                        通知配置信息
+                    <h4 class="modal-title" id="jobModalLabel">
+                        任务详情信息
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
@@ -108,59 +98,49 @@
 
                 <div class="modal-body">
                     <input type="text" id="id" name="id" hidden>
+
                     <div class="form-group">
                         <div>
-                            <label class="form-inline"/>ID：&nbsp&nbsp&nbsp&nbsp
+                            <label class="form-inline"/>任务名称：
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" style="width:100%;" id="nid"
-                                       name="username" placeholder="请输入通知ID"/></label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div id="pass_word">
-                            <label class="form-inline"/>名称：
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" style="width:100%;" name="nname"
-                                       id="nname" placeholder="请输入名称"/></label>
+                                <input type="text" class="form-control" style="width:100%;" name="jobName"
+                                       id="jobName" placeholder="请输入任务名称"/></label>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div>
-                            <label class="form-inline"/>类型：
+                            <label class="form-inline"/>任务分组：
                             <div class="col-sm-10">
-                                <select class="form-control" style="width:100%;" id="type">
-                                    <option>email</option>
-                                    <option>sms</option>
-                                </select>
+                                <input type="text" class="form-control" style="width:100%;" name="jobGroup"
+                                       id="jobGroup" placeholder="请输入任务分组"/></label>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div>
-                            <label class="form-inline"/>主题：
+                            <label class="form-inline"/>任务类名：
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" style="width:100%;" name="subject" id="subject"
-                                       placeholder="请输入主题"/></label>
+                                <input type="text" class="form-control" style="width:100%;" name="jobClassName"
+                                       id="jobClassName" placeholder="请输入任务类名"/></label>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div>
-                            <label class="form-inline"/>邮箱：
+                            <label class="form-inline"/>CRON：&nbsp&nbsp&nbsp&nbsp
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" style="width:100%;" name="email" id="email"
-                                       placeholder="请输入邮箱"/></label>
+                                <input type="text" class="form-control" style="width:100%;" name="jobCron" id="jobCron"
+                                       placeholder="请输入CRON表达式"/></label>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div>
-                            <label class="form-inline"/>内容：
+                            <label class="form-inline"/>任务描述：
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" style="width:100%;" name="content" id="content"
-                                       placeholder="请输入内容"/></label>
+                                <input type="text" class="form-control" style="width:100%;" name="description"
+                                       id="description" placeholder="请输入任务描述"/></label>
                             </div>
                         </div>
                     </div>
@@ -176,6 +156,45 @@
     </div>
 </form>
 
+
+<!-- 模态框（任务信息） -->
+<form method="post" name="job" class="form-horizontal" role="form" id="form-data-cron" style="margin: 20px;">
+    <div class="modal fade" id="jobCronModal" tabindex="-1" role="dialog" aria-labelledby="jobCronModalLabel"
+         aria-hidden="true"
+         data-backdrop="static" data-keyboard="false"><!--控制点击模态框之外不消失-->
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:500px;">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="jobCronModalLabel">
+                        cron修改
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text" id="cron_id" name="id" hidden>
+
+                    <div class="form-group">
+                        <div>
+                            <label class="form-inline"/>cron：
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" style="width:100%;" name="jobCron"
+                                       id="job_cron" placeholder="请输入任务cron"/></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="margin: auto">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="update_cron();">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <!--分页信息-->
 <div class="modal-footer" style="bottom: 20%;position: absolute;float: right;width: 100%;">
     <ul class="pagination pull-right no-margin">
@@ -183,10 +202,10 @@
             <a class="allpage"><b th:text="'当前第 '+ ${pageInfo.pageNum}+ ' 页'"></b></a>
             <a class="allpage"><b th:text="'共 '+ ${pageInfo.pages}+ ' 页'"></b></a>
             <a class="allpage"><b th:text="'共 '+ ${pageInfo.total}+ ' 条'"></b></a>
-            <a th:href="@{/notify/queryNotifyConfig}">首页</a>
-            <a th:href="@{/notify/queryNotifyConfig(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
-            <a th:href="@{/notify/queryNotifyConfig(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
-            <a th:href="@{/notify/queryNotifyConfig(pageNum=${pageInfo.pages})}">尾页</a>
+            <a th:href="@{/notify/queryJob}">首页</a>
+            <a th:href="@{/notify/queryJob(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
+            <a th:href="@{/notify/queryJob(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
+            <a th:href="@{/notify/queryJob(pageNum=${pageInfo.pages})}">尾页</a>
         </div>
     </ul>
 </div>
@@ -205,34 +224,29 @@
 <script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/locale/bootstrap-table-zh-CN.js}"></script>
 
 <script>
-    var myUrl;
 
     function toAdd() {
-        myUrl = '/notify/addNotifyConfig';
-        $('#nid').removeAttr("readonly");
         $('#form-data input').val("");
     }
 
-    //编辑
-    function update_config(nid) {
-        myUrl = '/notify/toUpdateNotify';
+    function toUpdate(id) {
+        $('#cron_id').val(id);
+    }
+
+    //编辑cron
+    function update_cron() {
+        var id = $('#cron_id').val();
+        var cron = $('#job_cron').val();
         $.ajax({
-            url: myUrl,
-            data: {"nid": nid},
+            url: '/job/updateJobCron',
+            data: {"id": id, "cron": cron},
             type: "post",
             success: function (data) {
                 if (data.success) {
-                    var notifyConfig = data.data.data;
-                    //赋值
-                    $('#id').val(notifyConfig.id);
-                    $('#nid').val(notifyConfig.nid);
-                    $('#nname').val(notifyConfig.nname);
-                    $('#type').val(notifyConfig.type);
-                    $('#subject').val(notifyConfig.subject);
-                    $('#content').val(notifyConfig.content);
-                    $('#email').val(notifyConfig.email);
-                    $('#nid').attr("readonly", "readonly");
-                    myUrl = '/notify/updateNotifyConfig';
+                    location.reload();
+                    alert(data.message);
+                } else {
+                    alert(data.message + ":" + data.data.msg)
                 }
             }
         });
@@ -240,16 +254,15 @@
 
     //提交表单
     function submitForm() {
-        var notifyConfig = {};
-        notifyConfig.nid = $('#nid').val();
-        notifyConfig.nname = $('#nname').val();
-        notifyConfig.type = $('#type').val();
-        notifyConfig.subject = $('#subject').val();
-        notifyConfig.content = $('#content').val();
-        notifyConfig.email = $('#email').val();
+        var job = {};
+        job.jobName = $('#jobName').val();
+        job.jobGroup = $('#jobGroup').val();
+        job.jobClassName = $('#jobClassName').val();
+        job.jobCron = $('#jobCron').val();
+        job.description = $('#description').val();
         $.ajax({
-            url: myUrl,
-            data: JSON.stringify(notifyConfig),
+            url: '/job/addJob',
+            data: JSON.stringify(job),
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json;charset=UTF-8',
@@ -270,10 +283,10 @@
     }
 
     //删除
-    function delete_config(nid) {
+    function delete_job(id) {
         $.ajax({
-            url: '/notify/deleteNotifyConfig',
-            data: {"nid": nid},
+            url: '/job/deleteJob',
+            data: {"id": id},
             type: "post",
             success: function (data) {
                 if (data.success) {
@@ -290,10 +303,10 @@
     }
 
     //禁用,启用
-    function disable_config(nid, status) {
+    function disable_job(id, status) {
         $.ajax({
-            url: '/notify/updateStatus',
-            data: {'nid': nid, 'status': status},
+            url: '/job/updateJobStatus',
+            data: {'id': id, 'status': status},
             type: "post",
             success: function (data) {
                 if (data.success) {
@@ -304,12 +317,6 @@
                 }
             }
         });
-    }
-
-    //搜索框查询配置信息
-    function searchConfig() {
-        var name = $("#search_config").val();
-        window.location.href = "/notify/queryNotifyConfig?nname=" + name;
     }
 
 </script>

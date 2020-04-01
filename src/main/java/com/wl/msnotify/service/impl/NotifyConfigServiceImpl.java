@@ -1,6 +1,7 @@
 package com.wl.msnotify.service.impl;
 
 import com.wl.msnotify.entity.NotifyConfig;
+import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.mapper.NotifyConfigMapper;
 import com.wl.msnotify.service.NotifyConfigService;
 import com.wl.msnotify.util.BaseException;
@@ -24,6 +25,7 @@ public class NotifyConfigServiceImpl implements NotifyConfigService {
         if (null != nc) {
             throw new BaseException("已存在通知配置信息，请检查通知ID");
         }
+        notifyConfig.setStatus(CommonEnum.TRUE.getValue());
         notifyConfigMapper.insertNotify(notifyConfig);
     }
 

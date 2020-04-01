@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wl.msnotify.mapper.JobDetailsMapper">
+    <resultMap id="BaseResultMap" type="com.wl.msnotify.entity.JobDetails">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="job_name" property="jobName" jdbcType="VARCHAR"/>
+        <result column="job_group" property="jobGroup" jdbcType="VARCHAR"/>
+        <result column="job_class_name" property="jobClassName" jdbcType="VARCHAR"/>
+        <result column="job_cron" property="jobCron" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, job_name, job_group, job_class_name, job_cron, description, status
+  </sql>
+
+    <select id="findAllJobs" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from job_details
+    </select>
+
+    <select id="findJobById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from job_details
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteJob" parameterType="java.lang.Integer">
+    delete from job_details
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insertJob" parameterType="com.wl.msnotify.entity.JobDetails">
+    insert into job_details (id, job_name, job_group, job_class_name, job_cron, description,status)
+    values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, #{jobGroup,jdbcType=VARCHAR}, 
+      #{jobClassName,jdbcType=VARCHAR}, #{jobCron,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
+   </insert>
+
+    <update id="updateJobCron">
+        update job_details set  job_cron = #{cron} where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateStatus" parameterType="java.lang.Integer">
+        update job_details set status =#{status}  where id = #{id}
+    </update>
+
+</mapper>
