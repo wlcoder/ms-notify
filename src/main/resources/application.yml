@@ -1,6 +1,9 @@
 #端口号
 server:
   port: 8181
+#任务调度
+quartz:
+  enabled: true
 
 spring:
   #mysql 配置数据源
@@ -35,12 +38,6 @@ spring:
     port: 465
     test-connection: true
     properties.mail.smtp.ssl.enable: true
-#    debugger: true
-#    smtp:
-#     timeout: 1000
-#     socketFactory:
-#       port: 465
-
 
 #配置mybatis
 mybatis:

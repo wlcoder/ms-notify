@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.JobDetails;
+import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.service.JobService;
 import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.ResultUtil;
@@ -44,6 +45,7 @@ public class JobController {
      * 新增任务
      */
     @ResponseBody
+    @TimeConsumeAnnotation
     @RequestMapping(value = "/addJob")
     public ResultUtil addJob(@RequestBody JobDetails jobDetails) {
         try {
@@ -56,10 +58,12 @@ public class JobController {
 
 
     /*
-     * 修改任务cron
-     *
+     *修改任务cron
      */
+
+
     @ResponseBody
+    @TimeConsumeAnnotation
     @RequestMapping(value = "/updateJobCron")
     public ResultUtil updateJobCron(Integer id, String cron) {
         try {
@@ -71,9 +75,12 @@ public class JobController {
     }
 
     /*
-     * 删除任务
+     *删除任务
      */
+
+
     @ResponseBody
+    @TimeConsumeAnnotation
     @RequestMapping(value = "/deleteJob")
     public ResultUtil deleteJob(Integer id) {
         try {
@@ -84,17 +91,20 @@ public class JobController {
         return ResultUtil.ok().data("msg", "success").message("删除任务成功");
     }
 
-    /*
-     * 禁用or启用 任务
+
+    /**
+     * 恢复or暂停 任务
      */
 
     @ResponseBody
+    @TimeConsumeAnnotation
     @RequestMapping(value = "/updateJobStatus")
     public ResultUtil updateJobStatus(Integer id, Integer status) {
-        String config_status = (status == 1 ? "启用" : "禁用");
+        String config_status = (status == CommonEnum.TRUE.getValue() ? "恢复" : "暂停");
         try {
             jobService.updateStatus(id, status);
         } catch (BaseException e) {
+            log.error("job运行失败：" + e.getMessage());
             return ResultUtil.error().data("msg", e.getMessage()).message(config_status + "任务失败");
         }
         return ResultUtil.ok().data("msg", "success").message(config_status + "任务成功");

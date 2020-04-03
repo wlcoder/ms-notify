@@ -1,43 +1,69 @@
 package com.wl.msnotify.quartzConfig;
 
-import org.quartz.Trigger;
+import org.quartz.spi.JobFactory;
+import org.quartz.spi.TriggerFiredBundle;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
-import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
+
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Properties;
+
 
 @Configuration
 public class QuartzConfig {
-    @Bean(name = "jobDetail")
-    public MethodInvokingJobDetailFactoryBean createJobDetail(ScheduleTask task) {
-        MethodInvokingJobDetailFactoryBean jobDetailFactoryBean = new MethodInvokingJobDetailFactoryBean();
-        jobDetailFactoryBean.setName("sendEmail");
-        jobDetailFactoryBean.setGroup("sendEmail");
-        jobDetailFactoryBean.setConcurrent(false);
-        jobDetailFactoryBean.setTargetObject(task);
-        jobDetailFactoryBean.setTargetMethod("autoSendEmail");
-        return jobDetailFactoryBean;
+
+    //配置JobFactory
+    @Bean
+    public JobFactory jobFactory(ApplicationContext applicationContext) {
+        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        return jobFactory;
     }
 
-    @Bean(name = "jobTrigger")
-    public CronTriggerFactoryBean createExportDailyTrigger(MethodInvokingJobDetailFactoryBean jobDetail) {
-        CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
-        tigger.setJobDetail(jobDetail.getObject());
-        tigger.setCronExpression("0 0/3 * * * ? ");
-        tigger.setName("sendEmail");
-        return tigger;
+    @Bean
+    public SchedulerFactoryBean schedulerFactoryBean(DataSource dataSource, JobFactory jobFactory) throws IOException {
+        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+        //QuartzScheduler启动时更新己存在的Job
+        factory.setOverwriteExistingJobs(true);
+        factory.setAutoStartup(true); //设置自行启动
+        factory.setDataSource(dataSource);
+        factory.setJobFactory(jobFactory);
+        factory.setQuartzProperties(quartzProperties());
+        return factory;
     }
 
-    @Bean(name = "scheduler")
-    public SchedulerFactoryBean schedulerFactory(Trigger cronJobTrigger) {
-        SchedulerFactoryBean bean = new SchedulerFactoryBean();
-        // 用于quartz集群,QuartzScheduler 启动时更新己存在的Job
-        bean.setOverwriteExistingJobs(true);
-        // 延时启动，应用启动1秒后
-        bean.setStartupDelay(1);
-        // 注册触发器
-        bean.setTriggers(cronJobTrigger);
-        return bean;
+    //从quartz.properties文件中读取Quartz配置属性
+    @Bean
+    public Properties quartzProperties() throws IOException {
+        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
+        propertiesFactoryBean.afterPropertiesSet();
+        return propertiesFactoryBean.getObject();
     }
+
+    //配置JobFactory,为quartz作业添加自动连接支持
+    public final class AutowiringSpringBeanJobFactory extends SpringBeanJobFactory implements ApplicationContextAware {
+        private AutowireCapableBeanFactory beanFactory;
+
+        @Override
+        public void setApplicationContext(final ApplicationContext context) {
+            beanFactory = context.getAutowireCapableBeanFactory();
+        }
+
+        @Override
+        protected Object createJobInstance(final TriggerFiredBundle bundle) throws Exception {
+            final Object job = super.createJobInstance(bundle);
+            beanFactory.autowireBean(job);
+            return job;
+        }
+    }
+
 }

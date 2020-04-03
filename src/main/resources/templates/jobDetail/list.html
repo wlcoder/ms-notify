@@ -55,7 +55,7 @@
                         <td th:text="${job.jobGroup}"></td>
                         <td th:text="${job.jobClassName}"></td>
                         <td th:text="${job.jobCron}"></td>
-                        <td th:text="${job.status}==0?'禁用':'启用'"></td>
+                        <td th:text="${job.status}==0?'停止':'运行'"></td>
                         <td th:text="${job.description}"></td>
                         <td>
                             <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#jobCronModal"
@@ -65,10 +65,10 @@
                                     th:onclick="delete_job([[${job.id}]])">删除
                             </button>
                             <button class="btn btn-sm btn-warning"
-                                    th:onclick="disable_job([[${job.id}]],0)">禁用
+                                    th:onclick="disable_job([[${job.id}]],0)">暂停
                             </button>
                             <button class="btn btn-sm btn-success"
-                                    th:onclick="disable_job([[${job.id}]],1)">启用
+                                    th:onclick="disable_job([[${job.id}]],1)">恢复
                             </button>
                         </td>
                     </tr>
@@ -302,7 +302,7 @@
         });
     }
 
-    //禁用,启用
+    //恢复，暂停
     function disable_job(id, status) {
         $.ajax({
             url: '/job/updateJobStatus',
