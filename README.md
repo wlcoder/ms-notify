@@ -18,7 +18,7 @@
 >>>>>service：服务层  
 >>>>>util：工具类（异常处理，redis连接，统一返回模板，email发送） 
 >>>>>MsNotifyApplication:项目启动类  
->>>resources  
+>resources：   
 >>>>generator:mybatis 反向映射  
 >>>>mappper: mappper.xml文件信息  
 >>>>sql: mysql数据库表信息   
