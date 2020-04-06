@@ -1,7 +1,13 @@
 # ms-notify
 定时发送email： springboot + bootstrap   
-运行环境： idea ,springboot 2.2.5, redis,mysql  
-项目结构：  
+运行环境： idea ,springboot （2.2.5）, redis（密码：root123456）,mysql  
+实现效果：通过配置定时发送邮件   
+任务调度页面中的任务名称为通知配置页面的通知ID   
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/ms1_new.jpg)  
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/MS2_new.jpg)  
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/MS3_new.PNG)  
+
+项目结构介绍：  
 >src  
 >>mian  
 >>>java  
@@ -27,5 +33,5 @@
 >>>>application.yml:项目配置信息  
 >>>>logback.xml:日志信息    
 >>>>quartz.properties: 定时任务相关配置  
-实现效果：通过配置定时发送邮件  
+
 
