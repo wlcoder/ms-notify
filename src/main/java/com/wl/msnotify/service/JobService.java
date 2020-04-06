@@ -22,4 +22,8 @@ public interface JobService {
 
     //禁用，启用任务
     void updateStatus(Integer id, Integer status);
+
+    //重启任务
+    void restartJobs();
+
 }

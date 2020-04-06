@@ -10,6 +10,7 @@ import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,7 @@ public class JobServiceImpl implements JobService {
                     scheduler.rescheduleJob(triggerKey, trigger);
                 }
             }
-            log.info("修改cron成功：{},cron:{}" ,job.getJobName(), job.getJobCron());
+            log.info("修改cron成功：{},cron:{}", job.getJobName(), job.getJobCron());
             log.info("更新缓存。。。。");
             setJobsToRedis();
         } catch (SchedulerException e) {
@@ -141,6 +142,19 @@ public class JobServiceImpl implements JobService {
             setJobsToRedis();
         } catch (BaseException | SchedulerException e) {
             log.error("job运行失败：" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void restartJobs() {
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        try {
+            //暂停所有JOB
+            scheduler.pauseJobs(GroupMatcher.anyGroup());
+            //启动所有Job
+            scheduler.resumeJobs(GroupMatcher.anyGroup());
+        } catch (SchedulerException e) {
             e.printStackTrace();
         }
     }

@@ -33,6 +33,9 @@
                                onclick="toAdd()">任务添加
                        </button>
                 </div>
+                <div style="float: left;padding-bottom: 10px;padding-left: 10px">
+		     		   <button class="btn btn-sm btn-success" onclick="restartJob()">重启任务</button>
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-sm" id="config-table"><!--data-toggle="table"-->
@@ -40,11 +43,11 @@
                     <tr>
                         <th th:width="50" hidden="hidden">id</th>
                         <th th:width="120">任务名称</th>
-                        <th th:width="100">任务分组</th>
+                        <th th:width="120">任务分组</th>
                         <th th:width="150">任务类名</th>
                         <th th:width="150">cron表达式</th>
-                        <th th:width="80">状态</th>
-                        <th th:width="250">任务描述</th>
+                        <th th:width="100">状态</th>
+                        <th th:width="300">任务描述</th>
                         <th>操作</th>
                     </tr>
                     </thead>
@@ -311,6 +314,21 @@
             success: function (data) {
                 if (data.success) {
                     location.reload();
+                    alert(data.message);
+                } else {
+                    alert(data.message + ":" + data.data.msg)
+                }
+            }
+        });
+    }
+
+    //重启任务
+    function restartJob() {
+        $.ajax({
+            url: '/job/restartJobs',
+            type: "post",
+            success: function (data) {
+                if (data.success) {
                     alert(data.message);
                 } else {
                     alert(data.message + ":" + data.data.msg)

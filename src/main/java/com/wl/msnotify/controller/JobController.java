@@ -110,5 +110,17 @@ public class JobController {
         return ResultUtil.ok().data("msg", "success").message(config_status + "任务成功");
     }
 
+    @ResponseBody
+    @RequestMapping("/restartJobs")
+    public ResultUtil restartJobs() {
+        try {
+            jobService.restartJobs();
+        } catch (BaseException e) {
+            log.error("job运行失败：" + e.getMessage());
+            return ResultUtil.error().data("msg", e.getMessage()).message("重启任务失败");
+        }
+        return ResultUtil.ok().data("msg", "success").message("重启任务成功");
+    }
+
 
 }

@@ -7,10 +7,9 @@ import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.mapper.NotifyHistoryMapper;
 import com.wl.msnotify.service.NotifySendService;
 import com.wl.msnotify.util.BaseException;
-import com.wl.msnotify.util.EmailUtil;
+import com.wl.msnotify.util.SendEmail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +24,7 @@ import java.util.Date;
 public class NotifyEmailSendServiceImpl implements NotifySendService {
     @Autowired
     private NotifyHistoryMapper notifyHistoryMapper;
-    @Autowired
-    private EmailUtil emailUtil;
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+    private String from = "1608550717@qq.com";
 
     @Override
     @TimeConsumeAnnotation
@@ -40,7 +36,7 @@ public class NotifyEmailSendServiceImpl implements NotifySendService {
         NotifyHistory notifyHistory = NotifyHistory.builder()
                 .nid(notifyConfig.getNid())
                 .nname(notifyConfig.getNname())
-                .sender(fromEmail)
+                .sender(from)
                 .receiver(notifyConfig.getEmail())
                 .senddate(new Date())
                 .subject(notifyConfig.getSubject())
@@ -50,7 +46,8 @@ public class NotifyEmailSendServiceImpl implements NotifySendService {
                 .build();
         try {
             log.info("开始发送消息：" + notifyConfig.getNid());
-            emailUtil.send(fromEmail, notifyConfig.getEmail(), notifyConfig.getSubject(), notifyConfig.getContent());
+            SendEmail send = new SendEmail(notifyConfig);
+            send.start();
             log.info("发送消息结束：" + notifyConfig.getNid());
             notifyHistoryMapper.insertNotifyHistory(notifyHistory);
             log.info("发送成功保存进消息历史表：" + notifyConfig.getNid());

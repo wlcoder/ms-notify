@@ -34,6 +34,7 @@ public class QuartzConfig {
         //QuartzScheduler启动时更新己存在的Job
         factory.setOverwriteExistingJobs(true);
         factory.setAutoStartup(true); //设置自行启动
+        //factory.setStartupDelay(60);//系统启动60s后执行定时任务
         factory.setDataSource(dataSource);
         factory.setJobFactory(jobFactory);
         factory.setQuartzProperties(quartzProperties());
