@@ -100,7 +100,7 @@ public class JobController {
     @TimeConsumeAnnotation
     @RequestMapping(value = "/updateJobStatus")
     public ResultUtil updateJobStatus(Integer id, Integer status) {
-        String config_status = (status == CommonEnum.TRUE.getValue() ? "恢复" : "暂停");
+        String config_status = (status.equals(CommonEnum.TRUE.getValue()) ? "恢复" : "暂停");
         try {
             jobService.updateStatus(id, status);
         } catch (BaseException e) {

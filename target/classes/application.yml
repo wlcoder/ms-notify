@@ -25,20 +25,6 @@ spring:
         min-idle: 2
     timeout: 5000
 
-  #配置mail
-  mail:
-    #邮件协议smtp
-    host: smtp.qq.com
-    #发送者的邮件的用户名
-    username: 1608550717@qq.com
-    #使用的编码
-    default-encoding: utf-8
-    #移动端客户授权码
-    password: cctitlbsnklffjhd
-    port: 465
-    test-connection: true
-    properties.mail.smtp.ssl.enable: true
-
 #配置mybatis
 mybatis:
   mapper-locations: classpath:mapper/*.xml

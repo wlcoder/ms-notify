@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wl.msnotify.entity.JobDetails;
 import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.mapper.JobDetailsMapper;
-import com.wl.msnotify.quartzConfig.QuartzManager;
+import com.wl.msnotify.quartzconfig.QuartzManager;
 import com.wl.msnotify.service.JobService;
 import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.RedisUtil;
@@ -91,7 +91,7 @@ public class JobServiceImpl implements JobService {
             jobDetailsMapper.updateJobCron(id, cron);
             log.info("修改job定时任务信息。。。");
             JobDetails job = jobDetailsMapper.findJobById(id);
-            if (job.getStatus() == CommonEnum.TRUE.getValue()) {
+            if (job.getStatus().equals(CommonEnum.TRUE.getValue())) {
                 JobKey jobKey = quartzManager.getJobKey(job);
                 TriggerKey triggerKey = new TriggerKey(jobKey.getName(), jobKey.getGroup());
                 Scheduler scheduler = schedulerFactoryBean.getScheduler();
@@ -129,7 +129,7 @@ public class JobServiceImpl implements JobService {
             JobDetails jobDetails = jobDetailsMapper.findJobById(id);
             Scheduler scheduler = schedulerFactoryBean.getScheduler();
             JobKey jobKey = quartzManager.getJobKey(jobDetails);
-            if (status == CommonEnum.FALSE.getValue()) {
+            if (status.equals(CommonEnum.FALSE.getValue())) {
                 log.info("暂停job运行。。。");
                 scheduler.pauseJob(jobKey);
                 log.info("暂停job运行成功。。。");

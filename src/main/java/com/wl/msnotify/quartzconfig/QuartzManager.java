@@ -1,4 +1,4 @@
-package com.wl.msnotify.quartzConfig;
+package com.wl.msnotify.quartzconfig;
 
 import com.wl.msnotify.entity.JobDetails;
 import org.quartz.*;

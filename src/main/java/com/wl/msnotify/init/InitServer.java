@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wl.msnotify.entity.JobDetails;
 import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.mapper.JobDetailsMapper;
-import com.wl.msnotify.quartzConfig.QuartzManager;
+import com.wl.msnotify.quartzconfig.QuartzManager;
 import com.wl.msnotify.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -73,7 +73,7 @@ public class InitServer implements ApplicationRunner {
                     List<JobDetails> newJoblist = new ArrayList<>();
                     if (null != joblist && joblist.size() > 0) {
                         //过滤掉禁用的任务信息
-                        newJoblist.addAll(joblist.stream().filter(w -> w.getStatus() == CommonEnum.TRUE.getValue()).collect(Collectors.toList()));
+                        newJoblist.addAll(joblist.stream().filter(w -> w.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList()));
                     }
                     if (null != newJoblist && newJoblist.size() > 0) {
                         log.info("从数据库中注册启用的JOB...");
@@ -83,7 +83,7 @@ public class InitServer implements ApplicationRunner {
                             //通过反射获取对应的类
                             Class jobClass = Class.forName(job.getJobClassName());
                             JobDetail jobDetail = quartzManager.getJobDetail(jobKey, jobClass, job.getDescription(), map);
-                            if (job.getStatus() == CommonEnum.TRUE.getValue()) {
+                            if (job.getStatus().equals(CommonEnum.TRUE.getValue())) {
                                 scheduler.scheduleJob(jobDetail, quartzManager.getTrigger(job));
                             }
                         }
@@ -96,7 +96,7 @@ public class InitServer implements ApplicationRunner {
         }
     }
 
-    /*
+    /**
      * 初始化时将任务详情信息放进redis中
      */
     private void initJobDetails() {

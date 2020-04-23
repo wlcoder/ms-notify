@@ -32,7 +32,7 @@ public class EmailJob implements Job {
         try {
             log.info("开始发送email。。。");
             NotifyConfig notifyConfig = notifyConfigService.findNotifyById(jobName);
-            if (null != notifyConfig && notifyConfig.getStatus() == CommonEnum.TRUE.getValue()) {
+            if (null != notifyConfig && notifyConfig.getStatus().equals(CommonEnum.TRUE.getValue())) {
                 //获取通知类型
                 NotifySendService notifySendService = notifyStrategyFactory.getNotifyService(notifyConfig.getType());
                 //发送信息

@@ -39,6 +39,7 @@ public class SendEmail extends Thread {
             prop.put("mail.smtp.ssl.socketFactory", sf);
             //创建定义整个应用程序所需的环境信息的 Session 对象
             Session session = Session.getDefaultInstance(prop, new Authenticator() {
+                @Override
                 public PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(username, password);
                 }
