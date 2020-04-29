@@ -4,6 +4,7 @@ package com.wl.msnotify.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wl.msnotify.aop.SysLogAnnotation;
 import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.JobDetails;
 import com.wl.msnotify.enums.CommonEnum;
@@ -28,9 +29,10 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
-    /*
+    /**
      * 查询任务详情
      */
+    @SysLogAnnotation("查询任务详情")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/queryJob")
     public String queryJob(Model model, @RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum) {
@@ -41,10 +43,11 @@ public class JobController {
         return "jobDetail/list";
     }
 
-    /*
+    /**
      * 新增任务
      */
     @ResponseBody
+    @SysLogAnnotation("新增任务")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/addJob")
     public ResultUtil addJob(@RequestBody JobDetails jobDetails) {
@@ -57,12 +60,11 @@ public class JobController {
     }
 
 
-    /*
-     *修改任务cron
+    /**
+     * 修改任务cron
      */
-
-
     @ResponseBody
+    @SysLogAnnotation("修改任务")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/updateJobCron")
     public ResultUtil updateJobCron(Integer id, String cron) {
@@ -74,12 +76,11 @@ public class JobController {
         return ResultUtil.ok().data("msg", "success").message("修改任务cron成功");
     }
 
-    /*
-     *删除任务
+    /**
+     * 删除任务
      */
-
-
     @ResponseBody
+    @SysLogAnnotation("删除任务")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/deleteJob")
     public ResultUtil deleteJob(Integer id) {
@@ -91,12 +92,11 @@ public class JobController {
         return ResultUtil.ok().data("msg", "success").message("删除任务成功");
     }
 
-
     /**
      * 恢复or暂停 任务
      */
-
     @ResponseBody
+    @SysLogAnnotation("恢复暂停任务")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/updateJobStatus")
     public ResultUtil updateJobStatus(Integer id, Integer status) {
@@ -111,6 +111,7 @@ public class JobController {
     }
 
     @ResponseBody
+    @SysLogAnnotation("重启任务")
     @RequestMapping("/restartJobs")
     public ResultUtil restartJobs() {
         try {
@@ -121,6 +122,5 @@ public class JobController {
         }
         return ResultUtil.ok().data("msg", "success").message("重启任务成功");
     }
-
 
 }

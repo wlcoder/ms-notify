@@ -3,6 +3,7 @@ package com.wl.msnotify.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wl.msnotify.aop.SysLogAnnotation;
 import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.NotifyConfig;
 import com.wl.msnotify.entity.NotifyHistory;
@@ -28,9 +29,10 @@ public class NotifyController {
     @Autowired
     private NotifyHistoryService notifyHistoryService;
 
-    /*
+    /**
      * 查询通知配置
      */
+    @SysLogAnnotation("查询通知配置")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/queryNotifyConfig")
     public String queryNotifyConfig(Model model, @RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, String nname) {
@@ -41,10 +43,11 @@ public class NotifyController {
         return "notifyConfig/list";
     }
 
-    /*
+    /**
      * 新增配置
      */
     @ResponseBody
+    @SysLogAnnotation("新增配置")
     @RequestMapping(value = "/addNotifyConfig")
     public ResultUtil addNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
         try {
@@ -55,21 +58,22 @@ public class NotifyController {
         return ResultUtil.ok().data("msg", "success").message("新增配置成功");
     }
 
-    /*
+    /**
      * 跳转到修改页面
      */
     @ResponseBody
+    @SysLogAnnotation("跳转到修改页面")
     @RequestMapping("/toUpdateNotify")
     public ResultUtil toUpdateNotify(@RequestParam("nid") String nid) {
         NotifyConfig notifyConfig = notifyConfigService.findNotifyById(nid);
         return ResultUtil.ok().data("data", notifyConfig).message("跳转到修改页面");
     }
 
-    /*
+    /**
      * 修改通知配置
-     *
      */
     @ResponseBody
+    @SysLogAnnotation("修改通知配置")
     @RequestMapping(value = "/updateNotifyConfig")
     public ResultUtil updateNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
         try {
@@ -80,10 +84,11 @@ public class NotifyController {
         return ResultUtil.ok().data("msg", "success").message("修改配置成功");
     }
 
-    /*
+    /**
      * 删除通知配置
      */
     @ResponseBody
+    @SysLogAnnotation("删除通知配置")
     @RequestMapping(value = "/deleteNotifyConfig")
     public ResultUtil deleteNotifyConfig(String nid) {
         try {
@@ -94,11 +99,11 @@ public class NotifyController {
         return ResultUtil.ok().data("msg", "success").message("删除配置成功");
     }
 
-    /*
+    /**
      * 禁用 、启用
      */
-
     @ResponseBody
+    @SysLogAnnotation("禁用 、启用 配置")
     @RequestMapping(value = "/updateStatus")
     public ResultUtil updateStatus(String nid, int status) {
         String config_status = (status == 1 ? "启用" : "禁用");
@@ -110,9 +115,10 @@ public class NotifyController {
         return ResultUtil.ok().data("msg", "success").message(config_status + "配置成功");
     }
 
-    /*
+    /**
      * 查询通知历史
      */
+    @SysLogAnnotation("查询通知历史")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/queryNotifyHistory")
     public String queryNotifyHistory(Model model, @RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, String nname) {

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>操作日志</title>
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+    <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css" rel="stylesheet">
+    <style type="text/css">/*解决引入模态框后页面抖动*/
+    body {
+        padding-right: 0 !important;
+    }
+    </style>
+</head>
+
+<body>
+<!--引入抽取的topbar-->
+<div th:replace="commons/bar::topbar"></div>
+
+<div class="container-fluid">
+    <span class="row">
+        <!--引入侧边栏-->
+        <div th:replace="commons/bar::#sidebar(activeUri='sysLog')"></div>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div>
+            </div>
+            <p></p>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm" id="history-table">
+                    <thead>
+                    <tr>
+                        <th th:width="50" hidden="hidden">id</th>
+                        <th th:width="80">用户名</th>
+                        <th th:width="100">操作信息</th>
+                        <th th:width="120">方法名</th>
+                        <th th:width="100">ip</th>
+                        <th th:width="150">创建时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="log:${pageInfo.list}">
+                        <td th:hidden="hidden" th:text="${log.id}"></td>
+                        <td th:text="${log.userName}"></td>
+                        <td th:text="${log.operationInfo}"></td>
+                        <td th:text="${log.method}"></td>
+                        <td th:text="${log.ip}"></td>
+                        <td th:text="${#dates.format(log.createDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </span>
+</div>
+</div>
+
+<!--分页信息-->
+<div class="modal-footer" style="bottom: 20%;position: absolute;float: right;width: 100%;">
+    <ul class="pagination pull-right no-margin">
+        <div>
+            <a class="allpage"><b th:text="'当前第 '+ ${pageInfo.pageNum}+ ' 页'"></b></a>
+            <a class="allpage"><b th:text="'共 '+ ${pageInfo.pages}+ ' 页'"></b></a>
+            <a class="allpage"><b th:text="'共 '+ ${pageInfo.total}+ ' 条'"></b></a>
+            <a th:href="@{/log/queryLog}">首页</a>
+            <a th:href="@{/log/queryLog(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
+            <a th:href="@{/log/queryLog(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
+            <a th:href="@{/log/queryLog(pageNum=${pageInfo.pages})}">尾页</a>
+        </div>
+    </ul>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js"
+        th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<script type="text/javascript" src="asserts/js/popper.min.js"
+        th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+<script type="text/javascript" src="asserts/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+<!--引入bootstrap-table-->
+<script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.9.1/locale/bootstrap-table-zh-CN.js}"></script>
+
+<script>
+
+</script>
+</body>
+</html>

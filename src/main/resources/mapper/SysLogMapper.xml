@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wl.msnotify.mapper.SysLogMapper">
+    <resultMap id="BaseResultMap" type="com.wl.msnotify.entity.SysLog">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="operation_info" property="operationInfo" jdbcType="VARCHAR"/>
+        <result column="method" property="method" jdbcType="VARCHAR"/>
+        <result column="params" property="params" jdbcType="VARCHAR"/>
+        <result column="ip" property="ip" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_name, operation_info, method, ip, create_date
+    </sql>
+
+    <insert id="insertLog" parameterType="com.wl.msnotify.entity.SysLog">
+    insert into sys_log (id, user_name, operation_info, method, params, ip, create_date)
+    values (#{id}, #{userName}, #{operationInfo},#{method}, #{params}, #{ip}, #{createDate})
+   </insert>
+
+    <select id="findAllLog" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_log
+    </select>
+
+
+</mapper>
