@@ -54,13 +54,13 @@ public class InitServer implements ApplicationRunner {
      */
     private void startAllJobs() throws SchedulerException {
         //只允许一个线程进入操作
-        synchronized (log) {
+        synchronized (this) {
             try {
                 Scheduler scheduler = schedulerFactoryBean.getScheduler();
                 Set<JobKey> set = scheduler.getJobKeys(GroupMatcher.anyGroup());
                 //暂停所有JOB
                 scheduler.pauseJobs(GroupMatcher.anyGroup());
-                if (null != set && set.size() > 0) {
+                if (null != set && !set.isEmpty()) {
                     log.info("删除从数据库中注册的所有JOB...");
                     for (JobKey jobKey : set) {
                         scheduler.unscheduleJob(TriggerKey.triggerKey(jobKey.getName(), jobKey.getGroup()));
@@ -70,12 +70,12 @@ public class InitServer implements ApplicationRunner {
                 if (null != redisUtil.get(JOB_DETAILS)) {
                     String jobs = redisUtil.get(JOB_DETAILS).toString();
                     List<JobDetails> joblist = JSONObject.parseArray(jobs, JobDetails.class);
-                    List<JobDetails> newJoblist = new ArrayList<>();
-                    if (null != joblist && joblist.size() > 0) {
+                    List<JobDetails> newJoblist = new ArrayList<>(16);
+                    if (null != joblist && !joblist.isEmpty()) {
                         //过滤掉禁用的任务信息
                         newJoblist.addAll(joblist.stream().filter(w -> w.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList()));
                     }
-                    if (null != newJoblist && newJoblist.size() > 0) {
+                    if (null != newJoblist && !newJoblist.isEmpty()) {
                         log.info("从数据库中注册启用的JOB...");
                         for (JobDetails job : newJoblist) {
                             JobDataMap map = quartzManager.getJobDataMap(job);
@@ -83,9 +83,7 @@ public class InitServer implements ApplicationRunner {
                             //通过反射获取对应的类
                             Class jobClass = Class.forName(job.getJobClassName());
                             JobDetail jobDetail = quartzManager.getJobDetail(jobKey, jobClass, job.getDescription(), map);
-                            if (job.getStatus().equals(CommonEnum.TRUE.getValue())) {
-                                scheduler.scheduleJob(jobDetail, quartzManager.getTrigger(job));
-                            }
+                            scheduler.scheduleJob(jobDetail, quartzManager.getTrigger(job));
                         }
                     }
                 }
@@ -100,9 +98,8 @@ public class InitServer implements ApplicationRunner {
      * 初始化时将任务详情信息放进redis中
      */
     private void initJobDetails() {
-        // redisUtil.delete(JOB_DETAILS);
         List<JobDetails> list = jobDetailsMapper.findAllJobs();
-        if (null != list && list.size() > 0) {
+        if (null != list && !list.isEmpty()) {
             //list对象转换为json
             String jobList = JSON.toJSON(list).toString();
             redisUtil.set(JOB_DETAILS, jobList);
