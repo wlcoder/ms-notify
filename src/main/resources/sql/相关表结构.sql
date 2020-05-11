@@ -28,7 +28,7 @@ CREATE TABLE `notify_history` (
   `content` varchar(500) DEFAULT NULL COMMENT '发送内容',
   `sender` varchar(20) DEFAULT NULL COMMENT '发送人',
   `receiver` varchar(20) DEFAULT NULL COMMENT '接收人',
-  `senddate` date DEFAULT NULL COMMENT '发送时间',
+  `senddate` datetime DEFAULT NULL COMMENT '发送时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
