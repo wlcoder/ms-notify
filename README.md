@@ -3,10 +3,10 @@
 运行环境： idea ,springboot(2.2.5), redis(密码：root123456),jdk(1.8), mysql     
 实现效果：通过配置定时发送邮件,同时记录操作日志信息。    
 注：为了方便默认处理任务调度页面中的任务名称为通知配置页面的通知ID   
-![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/msn01.png)  
-![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/msn02.png)  
-![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/msn03.png)  
-![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/img/msn04.png)  
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn01.png)  
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn02.png)  
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn03.png)  
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn04.png)  
 
 项目结构介绍：  
 >src  
