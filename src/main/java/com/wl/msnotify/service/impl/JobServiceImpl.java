@@ -175,7 +175,7 @@ public class JobServiceImpl implements JobService {
     private void setJobsToRedis() {
         redisUtil.delete(JOB_DETAILS);
         List<JobDetails> list = findAllJobs();
-        if (null != list && list.size() > 0) {
+        if (null != list && !list.isEmpty()) {
             //list对象转换为json
             String jobList = JSON.toJSON(list).toString();
             redisUtil.set(JOB_DETAILS, jobList);
