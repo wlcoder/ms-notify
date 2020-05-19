@@ -34,7 +34,7 @@ public class EmailJob implements Job {
             NotifyConfig notifyConfig = notifyConfigService.findNotifyById(jobName);
             if (null != notifyConfig && notifyConfig.getStatus().equals(CommonEnum.TRUE.getValue())) {
                 //获取通知类型
-                NotifySendService notifySendService = notifyStrategyFactory.getNotifyService(notifyConfig.getType());
+                NotifySendService notifySendService = notifyStrategyFactory.buildService(notifyConfig.getType());
                 //发送信息
                 notifySendService.send(notifyConfig);
             }

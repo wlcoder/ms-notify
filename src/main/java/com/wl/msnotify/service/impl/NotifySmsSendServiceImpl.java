@@ -8,11 +8,16 @@ import org.springframework.stereotype.Service;
 /**
  * @desc 短信功能
  **/
-@Service("sms")
+@Service
 public class NotifySmsSendServiceImpl implements NotifySendService {
 
     @Override
     public void send(NotifyConfig notifyConfig) {
-        throw new BaseException("未提供短信功能");
+        throw new BaseException("暂未提供短信功能。。。");
+    }
+
+    @Override
+    public String getNotifyType() {
+        return "sms";
     }
 }

@@ -10,7 +10,6 @@ import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.SendEmail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,8 +17,7 @@ import java.util.Date;
 /*
  * 邮件发送
  * */
-@Service("email")
-@Primary
+@Service
 @Slf4j
 public class NotifyEmailSendServiceImpl implements NotifySendService {
     @Autowired
@@ -56,6 +54,11 @@ public class NotifyEmailSendServiceImpl implements NotifySendService {
             notifyHistoryMapper.insertNotifyHistory(notifyHistory);
             log.info("发送失败保存进消息历史表:" + notifyConfig.getNid());
         }
+    }
+
+    @Override
+    public String getNotifyType() {
+        return "email";
     }
 
 }

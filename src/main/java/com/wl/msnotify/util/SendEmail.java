@@ -29,8 +29,16 @@ public class SendEmail extends Thread {
     public void run() {
         try {
             Properties prop = new Properties();
+            prop.setProperty("mail.smtp.auth", "true");//开启认证
+            prop.setProperty("mail.debug", "true");//启用调试
+            prop.setProperty("mail.smtp.timeout", "1000");//设置链接超时
+            prop.setProperty("mail.smtp.port", "465");//设置端口
+            prop.setProperty("mail.smtp.socketFactory.port", "465");//设置ssl端口
+            prop.setProperty("mail.smtp.socketFactory.fallback", "false");
+            prop.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
             prop.setProperty("mail.host", host);
-            prop.setProperty("mail.transport.protocol", "smtp");
+           // prop.setProperty("mail.transport.protocol", "smtp");
             prop.setProperty("mail.smtp.auth", "true");
 
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
