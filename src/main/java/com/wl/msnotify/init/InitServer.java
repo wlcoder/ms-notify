@@ -18,11 +18,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /*
  * 项目启动初始化
@@ -57,10 +58,10 @@ public class InitServer implements ApplicationRunner {
         List<JobDetails> list = jobDetailsMapper.findAllJobs();
         if (null != list && !list.isEmpty()) {
             //过滤掉禁用的任务信息
-            List<JobDetails> jobList = list.stream().filter(job -> job.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList());
-            jobList.forEach(job -> {
-                redisUtil.set(job.getId().toString(), JSONObject.toJSON(job));
-            });
+            list.stream().filter(job -> job.getStatus().equals(CommonEnum.TRUE.getValue()))
+                    .forEach(job -> {
+                        redisUtil.set(job.getId().toString(), JSONObject.toJSON(job));
+                    });
         }
     }
 
@@ -87,15 +88,13 @@ public class InitServer implements ApplicationRunner {
 
     private void jobExecute() {
         List<JobDetails> list = jobDetailsMapper.findAllJobs();
-        List<JobDetails> jobList = new ArrayList<>();
-        if (null != list && !list.isEmpty()) {
-            jobList = list.stream().filter(job -> job.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList());
-        }
         //自定义线程池
-        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(5, 15, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10), new ThreadPoolExecutor.AbortPolicy());
-        jobList.forEach(jobDetails -> {
-            poolExecutor.execute(new JobExecute(jobDetails, schedulerFactoryBean, quartzManager));
-        });
+        Executor poolExecutor = new ThreadPoolExecutor(5, 15, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10), new ThreadPoolExecutor.AbortPolicy());
+        if (null != list && !list.isEmpty()) {
+            list.stream().filter(job -> job.getStatus().equals(CommonEnum.TRUE.getValue()))
+                    .forEach(jobDetails -> {
+                        poolExecutor.execute(new JobExecute(jobDetails, schedulerFactoryBean, quartzManager));
+                    });
+        }
     }
-
 }
