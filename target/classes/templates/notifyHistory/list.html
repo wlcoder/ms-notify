@@ -7,8 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>消息通知</title>
-    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
-    <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+    <link href="css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+    <link href="css/dashboard.css" th:href="@{/css/dashboard.css}" rel="stylesheet">
     <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css" rel="stylesheet">
     <style type="text/css">/*解决引入模态框后页面抖动*/
@@ -49,7 +49,7 @@
                         <th th:width="80">状态</th>
                         <th th:width="100">发送者</th>
                         <th th:width="100">接受者</th>
-                        <th th:width="120">发送时间</th>
+                        <th th:width="150">发送时间</th>
                         <th th:width="400">内容</th>
                     </tr>
                     </thead>
@@ -63,7 +63,7 @@
                         <td th:text="${history.status}==0?'失败':'成功'"></td>
                         <td th:text="${history.sender}"></td>
                         <td th:text="${history.receiver}"></td>
-                        <td th:text="${#dates.format(history.senddate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${#dates.format(history.senddate, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${history.content}"></td>
                     </tr>
                     </tbody>

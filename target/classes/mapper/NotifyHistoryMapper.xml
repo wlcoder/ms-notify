@@ -11,7 +11,7 @@
         <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="sender" property="sender" jdbcType="VARCHAR"/>
         <result column="receiver" property="receiver" jdbcType="VARCHAR"/>
-        <result column="senddate" property="senddate" jdbcType="DATE"/>
+        <result column="senddate" property="senddate" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, nid, nname, type, status, subject, content, sender, receiver, senddate
@@ -37,10 +37,8 @@
 
     <insert id="insertNotifyHistory" parameterType="com.wl.msnotify.entity.NotifyHistory">
     insert into notify_history (nid, nname,  type, status, subject, content, sender, receiver, senddate)
-    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR},
-      #{type,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{subject,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{sender,jdbcType=VARCHAR}, #{receiver,jdbcType=VARCHAR}, 
-      #{senddate,jdbcType=DATE})
+    values (#{nid,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+    #{subject,jdbcType=VARCHAR},  #{content,jdbcType=VARCHAR}, #{sender,jdbcType=VARCHAR}, #{receiver,jdbcType=VARCHAR},  #{senddate})
   </insert>
 
 </mapper>
