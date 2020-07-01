@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class EmailJob implements Job {
 
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    public void execute(JobExecutionContext jobExecutionContext){
         String jobName = (String) jobExecutionContext.getJobDetail().getJobDataMap().get("name");
         log.info("job运行打印。。。。。。。。。。" + jobName);
         //现在默认处理为jobName 和消息通知Id 一致
@@ -42,4 +41,5 @@ public class EmailJob implements Job {
             log.info("发送消息失败。。。");
         }
     }
+
 }

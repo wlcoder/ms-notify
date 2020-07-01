@@ -47,9 +47,10 @@ public class JobServiceImpl implements JobService {
             Class jobClass = Class.forName(jobDetails.getJobClassName());
             JobDetail jobDetail = quartzManager.getJobDetail(jobKey, jobClass, jobDetails.getDescription(), map);
             scheduler.scheduleJob(jobDetail, quartzManager.getTrigger(jobDetails));
+            scheduler.start();
             log.info("新增定时任务成功。。。");
-            log.info("更新缓存。。。。");
-            setJobsToRedis();
+//            log.info("更新缓存。。。。");
+//            setJobsToRedis();
         } catch (SchedulerException e) {
             log.error("新增任务:job运行失败");
         } catch (ClassNotFoundException e) {
@@ -72,8 +73,8 @@ public class JobServiceImpl implements JobService {
             scheduler.deleteJob(jobKey);
             log.info("删除jobDetails表开始。。。。");
             jobDetailsMapper.deleteJob(id);
-            log.info("更新缓存。。。。");
-            setJobsToRedis();
+//            log.info("更新缓存。。。。");
+//            setJobsToRedis();
         } catch (SchedulerException e) {
             log.error("删除任务job失败");
         } catch (BaseException e) {
@@ -108,8 +109,8 @@ public class JobServiceImpl implements JobService {
                 }
             }
             log.info("修改cron成功：{},cron:{}", job.getJobName(), job.getJobCron());
-            log.info("更新缓存。。。。");
-            setJobsToRedis();
+//            log.info("更新缓存。。。。");
+//            setJobsToRedis();
         } catch (SchedulerException e) {
             log.error("修改任务cron:job运行失败");
         } catch (BaseException e) {
@@ -138,8 +139,8 @@ public class JobServiceImpl implements JobService {
                 scheduler.resumeJob(jobKey);
                 log.info("恢复job运行成功。。。");
             }
-            log.info("更新缓存。。。。");
-            setJobsToRedis();
+//            log.info("更新缓存。。。。");
+//            setJobsToRedis();
         } catch (BaseException | SchedulerException e) {
             log.error("job运行失败：" + e.getMessage());
             e.printStackTrace();

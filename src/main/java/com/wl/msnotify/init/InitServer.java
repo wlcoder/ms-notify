@@ -1,6 +1,5 @@
 package com.wl.msnotify.init;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wl.msnotify.entity.JobDetails;
 import com.wl.msnotify.enums.CommonEnum;
@@ -8,7 +7,10 @@ import com.wl.msnotify.mapper.JobDetailsMapper;
 import com.wl.msnotify.quartzconfig.QuartzManager;
 import com.wl.msnotify.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.*;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /*
@@ -36,62 +39,15 @@ public class InitServer implements ApplicationRunner {
     @Autowired
     private QuartzManager quartzManager;
 
-    private static final String JOB_DETAILS = "job-details";
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
-        log.info("系统初始化执行：加载任务详情信息到redis中...");
-        redisUtil.delete(JOB_DETAILS);
-        if (null == redisUtil.get(JOB_DETAILS)) {
-            initJobDetails();
-        }
-        log.info("系统初始化执行：启动所有配置的任务Job....");
-        startAllJobs();
-    }
-
-    /**
-     * 启动所有的job
-     */
-    private void startAllJobs() throws SchedulerException {
-        //只允许一个线程进入操作
-        synchronized (this) {
-            try {
-                Scheduler scheduler = schedulerFactoryBean.getScheduler();
-                Set<JobKey> set = scheduler.getJobKeys(GroupMatcher.anyGroup());
-                //暂停所有JOB
-                scheduler.pauseJobs(GroupMatcher.anyGroup());
-                if (null != set && !set.isEmpty()) {
-                    log.info("删除从数据库中注册的所有JOB...");
-                    for (JobKey jobKey : set) {
-                        scheduler.unscheduleJob(TriggerKey.triggerKey(jobKey.getName(), jobKey.getGroup()));
-                        scheduler.deleteJob(jobKey);
-                    }
-                }
-                if (null != redisUtil.get(JOB_DETAILS)) {
-                    String jobs = redisUtil.get(JOB_DETAILS).toString();
-                    List<JobDetails> joblist = JSONObject.parseArray(jobs, JobDetails.class);
-                    List<JobDetails> newJoblist = new ArrayList<>(16);
-                    if (null != joblist && !joblist.isEmpty()) {
-                        //过滤掉禁用的任务信息
-                        newJoblist.addAll(joblist.stream().filter(w -> w.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList()));
-                    }
-                    if (null != newJoblist && !newJoblist.isEmpty()) {
-                        log.info("从数据库中注册启用的JOB...");
-                        for (JobDetails job : newJoblist) {
-                            JobDataMap map = quartzManager.getJobDataMap(job);
-                            JobKey jobKey = quartzManager.getJobKey(job);
-                            //通过反射获取对应的类
-                            Class jobClass = Class.forName(job.getJobClassName());
-                            JobDetail jobDetail = quartzManager.getJobDetail(jobKey, jobClass, job.getDescription(), map);
-                            scheduler.scheduleJob(jobDetail, quartzManager.getTrigger(job));
-                        }
-                    }
-                }
-            } catch (SecurityException | ClassNotFoundException e) {
-                log.error("初始化启动job失败。。。。");
-                e.printStackTrace();
-            }
-        }
+    public void run(ApplicationArguments args) {
+//        log.info("系统初始化执行：加载任务详情信息到redis中...");
+//        initJobDetails();
+        log.info("系统初始化执行：删除触发器中所有任务....");
+        deleteJobs();
+        log.info("系统初始化执行：多线程执行job....");
+        jobExecute();
     }
 
     /**
@@ -100,11 +56,46 @@ public class InitServer implements ApplicationRunner {
     private void initJobDetails() {
         List<JobDetails> list = jobDetailsMapper.findAllJobs();
         if (null != list && !list.isEmpty()) {
-            //list对象转换为json
-            String jobList = JSON.toJSON(list).toString();
-            redisUtil.set(JOB_DETAILS, jobList);
-        } else {
-            redisUtil.set(JOB_DETAILS, null);
+            //过滤掉禁用的任务信息
+            List<JobDetails> jobList = list.stream().filter(job -> job.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList());
+            jobList.forEach(job -> {
+                redisUtil.set(job.getId().toString(), JSONObject.toJSON(job));
+            });
         }
     }
+
+    /**
+     * 删除jobs
+     */
+    private void deleteJobs() {
+        try {
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            Set<JobKey> set = scheduler.getJobKeys(GroupMatcher.anyGroup());
+            //暂停所有JOB
+            scheduler.pauseJobs(GroupMatcher.anyGroup());
+            if (null != set && !set.isEmpty()) {
+                for (JobKey jobKey : set) {
+                    scheduler.unscheduleJob(TriggerKey.triggerKey(jobKey.getName(), jobKey.getGroup()));
+                    scheduler.deleteJob(jobKey);
+                }
+            }
+        } catch (SchedulerException e) {
+            log.error("初始化删除job失败。。。。");
+            e.printStackTrace();
+        }
+    }
+
+    private void jobExecute() {
+        List<JobDetails> list = jobDetailsMapper.findAllJobs();
+        List<JobDetails> jobList = new ArrayList<>();
+        if (null != list && !list.isEmpty()) {
+            jobList = list.stream().filter(job -> job.getStatus().equals(CommonEnum.TRUE.getValue())).collect(Collectors.toList());
+        }
+        //自定义线程池
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(5, 15, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10), new ThreadPoolExecutor.AbortPolicy());
+        jobList.forEach(jobDetails -> {
+            poolExecutor.execute(new JobExecute(jobDetails, schedulerFactoryBean, quartzManager));
+        });
+    }
+
 }
