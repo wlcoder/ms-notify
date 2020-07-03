@@ -220,6 +220,7 @@
             url: myUrl,
             data: {"nid": nid},
             type: "post",
+            headers: {"token": localStorage.getItem("token")},
             success: function (data) {
                 if (data.success) {
                     var notifyConfig = data.data.data;
@@ -255,6 +256,7 @@
             contentType: 'application/json;charset=UTF-8',
             async: true,
             timeout: 50000,
+            headers: {"token": localStorage.getItem("token")},
             success: function (data) {
                 if (data.success) {
                     location.reload();
@@ -275,6 +277,7 @@
             url: '/notify/deleteNotifyConfig',
             data: {"nid": nid},
             type: "post",
+            headers: {"token": localStorage.getItem("token")},
             success: function (data) {
                 if (data.success) {
                     location.reload();
@@ -295,6 +298,7 @@
             url: '/notify/updateStatus',
             data: {'nid': nid, 'status': status},
             type: "post",
+            headers: {"token": localStorage.getItem("token")},
             success: function (data) {
                 if (data.success) {
                     location.reload();

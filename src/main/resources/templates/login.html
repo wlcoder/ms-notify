@@ -39,7 +39,8 @@
             data: {'username': username, 'password': password},
             success: function (data) {
                 if (data.success) {
-                    alert(data.message);
+                    //alert(data.message);
+                    localStorage.setItem("token",data.data.msg);
                     location.href = "/index"; //  window.location.href 不生效 检查是否为form 表单
                 } else {
                     alert(data.message)
