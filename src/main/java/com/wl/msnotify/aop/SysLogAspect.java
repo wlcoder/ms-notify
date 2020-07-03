@@ -1,6 +1,5 @@
 package com.wl.msnotify.aop;
 
-import com.alibaba.fastjson.JSON;
 import com.wl.msnotify.entity.SysLog;
 import com.wl.msnotify.service.SysLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,8 +59,8 @@ public class SysLogAspect {
         //请求的参数
         Object[] args = joinPoint.getArgs();
         //将参数所在的数组转换成json
-        String params = JSON.toJSONString(args);
-        sysLog.setParams(params);
+//        String params = JSON.toJSONString(args);
+//        sysLog.setParams(params);
         sysLog.setCreateDate(new Date());
         sysLog.setUserName("admin");//默认admin
         //获取用户ip地址
