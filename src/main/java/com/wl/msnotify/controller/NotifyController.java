@@ -3,6 +3,8 @@ package com.wl.msnotify.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wl.msnotify.aop.NeedToken;
+import com.wl.msnotify.aop.SkipToken;
 import com.wl.msnotify.aop.SysLogAnnotation;
 import com.wl.msnotify.aop.TimeConsumeAnnotation;
 import com.wl.msnotify.entity.NotifyConfig;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -32,6 +35,7 @@ public class NotifyController {
     /**
      * 查询通知配置
      */
+    @SkipToken
     @SysLogAnnotation("查询通知配置")
     @TimeConsumeAnnotation
     @RequestMapping(value = "/queryNotifyConfig")
@@ -47,6 +51,7 @@ public class NotifyController {
      * 新增配置
      */
     @ResponseBody
+    @NeedToken
     @SysLogAnnotation("新增配置")
     @RequestMapping(value = "/addNotifyConfig")
     public ResultUtil addNotifyConfig(@RequestBody NotifyConfig notifyConfig) {
@@ -61,6 +66,7 @@ public class NotifyController {
     /**
      * 跳转到修改页面
      */
+    @NeedToken
     @ResponseBody
     @SysLogAnnotation("跳转到修改页面")
     @RequestMapping("/toUpdateNotify")
@@ -72,6 +78,7 @@ public class NotifyController {
     /**
      * 修改通知配置
      */
+    @NeedToken
     @ResponseBody
     @SysLogAnnotation("修改通知配置")
     @RequestMapping(value = "/updateNotifyConfig")
@@ -87,6 +94,7 @@ public class NotifyController {
     /**
      * 删除通知配置
      */
+    @NeedToken
     @ResponseBody
     @SysLogAnnotation("删除通知配置")
     @RequestMapping(value = "/deleteNotifyConfig")
@@ -102,10 +110,11 @@ public class NotifyController {
     /**
      * 禁用 、启用
      */
+    @NeedToken
     @ResponseBody
     @SysLogAnnotation("禁用 、启用 配置")
     @RequestMapping(value = "/updateStatus")
-    public ResultUtil updateStatus(String nid, int status) {
+    public ResultUtil updateStatus(HttpServletRequest request, String nid, int status) {
         String config_status = (status == 1 ? "启用" : "禁用");
         try {
             notifyConfigService.updateStatus(nid, status);

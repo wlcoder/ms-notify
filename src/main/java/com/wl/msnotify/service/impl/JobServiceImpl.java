@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wl.msnotify.entity.JobDetails;
 import com.wl.msnotify.enums.CommonEnum;
 import com.wl.msnotify.mapper.JobDetailsMapper;
-import com.wl.msnotify.quartzconfig.QuartzManager;
+import com.wl.msnotify.config.QuartzManager;
 import com.wl.msnotify.service.JobService;
 import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.RedisUtil;

@@ -1,4 +1,4 @@
-package com.wl.msnotify.quartzconfig;
+package com.wl.msnotify.config;
 
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;

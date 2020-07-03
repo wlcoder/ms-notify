@@ -1,7 +1,7 @@
 package com.wl.msnotify.init;
 
 import com.wl.msnotify.entity.JobDetails;
-import com.wl.msnotify.quartzconfig.QuartzManager;
+import com.wl.msnotify.config.QuartzManager;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
