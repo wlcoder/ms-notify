@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS notify_config;
 DROP TABLE IF EXISTS notify_history;
 DROP TABLE IF EXISTS job_details;
 DROP TABLE IF EXISTS sys_log;
-
+DROP TABLE IF EXISTS sys_user;
 
 --消息配置表
 CREATE TABLE `notify_config` (
@@ -55,6 +55,16 @@ CREATE TABLE `sys_log` (
   `create_date` datetime DEFAULT NULL COMMENT '操作时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+--用户表
+
+CREATE TABLE `sys_user` (
+  `id` tinyint(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(16) DEFAULT NULL COMMENT '用户名',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码',
+  `status` char(1) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 
 
