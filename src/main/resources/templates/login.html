@@ -14,10 +14,10 @@
     <img class="mb-4" th:src="@{img/my.svg}" alt="" width="80" height="80">
     <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
     <label class="sr-only">用户名</label>
-    <input type="text" name="username" id="username" class="form-control" th:placeholder="用户名" required="" autofocus="">
+    <input type="text" name="username" id="username" class="form-control" th:placeholder="用户名" required="required" autofocus="">
     <p class=""></p>
     <label class="sr-only">密码</label>
-    <input type="password" name="password" id="password" class="form-control" th:placeholder="密码" required="">
+    <input type="password" name="password" id="password" class="form-control" th:placeholder="密码" required="required" >
     <button class="btn btn-lg btn-primary btn-block" th:onclick="loginIn()">登录</button>
 </div>
 </body>
@@ -29,6 +29,10 @@
         debugger;
         var username = $('#username').val();
         var password = $('#password').val();
+        if(""==username || ""==password){
+            alert("用户信息不完整，请检查！");
+            return;
+        }
         $.ajax({
             url: '/loginIn',
             type: "post",
