@@ -1,8 +1,14 @@
 # ms-notify
 定时发送email： springboot + bootstrap + thymeleaf    
 运行环境： idea ,springboot(2.2.5), redis(密码：root123456),jdk(1.8), mysql     
-实现效果：通过配置定时发送邮件,同时记录操作日志信息。    
-注：为了方便默认处理任务调度页面中的任务名称为通知配置页面的通知ID   
+实现效果：  
+*实现JWT登录授权，通过注解自定义需要token的请求方法  
+*定时任务自主控制启动禁止恢复  
+*定时发送邮件，启动时多线程发送邮件信息  
+*通过注解记录用户操作信息   
+
+注：登录用户名：admin  密码： admin  为了方便默认处理任务调度页面中的任务名称为通知配置页面的通知ID     
+![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn00.PNG) 
 ![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn01.png)  
 ![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn02.png)  
 ![image](https://github.com/wlonghui/ms-notify/blob/master/src/main/resources/static/img/msn03.png)  
