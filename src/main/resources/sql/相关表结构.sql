@@ -66,6 +66,8 @@ CREATE TABLE `sys_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `sys_user` VALUES (1, 'admin', 'f96f44d2f1396d753b50ec5a7cd253bb', '1');
+
 
 
 
