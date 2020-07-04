@@ -52,17 +52,14 @@ public class JwtUtil {
      * @return
      */
     public static SysUser getTokenInfo(String token) {
-        try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(getKeyInstance()).parseClaimsJws(token);
-            Claims claims = claimsJws.getBody();
-            return SysUser.builder().id((Integer) claims.get(UID))
-                    .username((String) claims.get(USERNAME))
-                    .password((String) claims.get(PASSWORD))
-                    .status((Integer) claims.get(STATUS))
-                    .build();
-        } catch (ExpiredJwtException e) {
-            throw new BaseException("token 超时失效");
-        }
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(getKeyInstance()).parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+        return SysUser.builder().id((Integer) claims.get(UID))
+                .username((String) claims.get(USERNAME))
+                .password((String) claims.get(PASSWORD))
+                .status((Integer) claims.get(STATUS))
+                .build();
+
     }
 
 }

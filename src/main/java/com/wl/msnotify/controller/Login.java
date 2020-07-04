@@ -5,6 +5,7 @@ import com.wl.msnotify.entity.SysUser;
 import com.wl.msnotify.service.SysUserService;
 import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.JwtUtil;
+import com.wl.msnotify.util.RedisUtil;
 import com.wl.msnotify.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class Login {
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @SkipToken
     @RequestMapping("/login")
@@ -43,7 +46,9 @@ public class Login {
             SysUser user = sysUserService.findUser(username, password);
             if (null != user) {
                 user.setPassword(password);
-                String token = JwtUtil.generatorToken(user, 60);
+                String token = JwtUtil.generatorToken(user, 60*60);
+                //token 保存在redis中
+                redisUtil.set("ms_notify_token", token);
                 return ResultUtil.ok().data("msg", token).message("登录成功");
             } else {
                 return ResultUtil.error().data("msg", "error").message("用户不存在");

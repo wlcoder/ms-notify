@@ -2,10 +2,10 @@ package com.wl.msnotify.interceptor;
 
 import com.wl.msnotify.aop.NeedToken;
 import com.wl.msnotify.aop.SkipToken;
-import com.wl.msnotify.entity.SysUser;
 import com.wl.msnotify.service.SysUserService;
 import com.wl.msnotify.util.BaseException;
 import com.wl.msnotify.util.JwtUtil;
+import com.wl.msnotify.util.RedisUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,8 @@ import java.util.Objects;
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     private SysUserService userService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws ServletException, IOException {
@@ -55,20 +57,25 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     if (Objects.isNull(token)) {
                         throw new BaseException("无token，请重新登录");
                     }
-                    SysUser sysUser = JwtUtil.getTokenInfo(token);
-                    SysUser user = userService.findUser(sysUser.getUsername(), sysUser.getPassword());
-                    if (Objects.isNull(user)) {
-                        throw new BaseException("用户不存在，请重新登录");
+                    try {
+                        JwtUtil.getTokenInfo(token);
+                    } catch (ExpiredJwtException e) {
+                        throw new BaseException("token超时");
+                    }
+//                    SysUser user = userService.findUser(sysUser.getUsername(), sysUser.getPassword());
+//                    if (Objects.isNull(user)) {
+//                        throw new BaseException("用户不存在，请重新登录");
+//                    }
+                    if (!Objects.equals(token, redisUtil.get("ms_notify_token"))) {
+                        throw new BaseException("token异常，请重新登录");
                     }
                 }
             }
-        } catch (ExpiredJwtException e) {
-            e.printStackTrace();
-            httpServletResponse.sendRedirect("/login");
         } catch (BaseException e) {
             e.printStackTrace();
             //token发生异常 返回登录页面
             httpServletResponse.sendRedirect("/login");
+            return false;
         }
         return true;
     }

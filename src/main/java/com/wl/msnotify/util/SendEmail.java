@@ -30,7 +30,7 @@ public class SendEmail extends Thread {
         try {
             Properties prop = new Properties();
             prop.setProperty("mail.smtp.auth", "true");//开启认证
-            prop.setProperty("mail.debug", "true");//启用调试
+           // prop.setProperty("mail.debug", "true");//启用调试
             prop.setProperty("mail.smtp.timeout", "1000");//设置链接超时
             prop.setProperty("mail.smtp.port", "465");//设置端口
             prop.setProperty("mail.smtp.socketFactory.port", "465");//设置ssl端口
