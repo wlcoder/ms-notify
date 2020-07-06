@@ -1,11 +1,15 @@
 package com.wl.msnotify.config;
 
 import com.wl.msnotify.interceptor.AuthenticationInterceptor;
+import com.wl.msnotify.interceptor.MyWebHandlerException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * @author : wl
@@ -35,5 +39,14 @@ public class webConfig implements WebMvcConfigurer {
         };
         return adapter;
     }
+
+    /*
+     * 异常拦截处理
+     * */
+    @Override
+    public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+        resolvers.add(new MyWebHandlerException());
+    }
+
 
 }

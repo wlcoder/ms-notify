@@ -49,7 +49,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
         }
         //检查有没有需要token的注解
-        try {
             if (method.isAnnotationPresent(NeedToken.class)) {
                 NeedToken needToken = method.getAnnotation(NeedToken.class);
                 if (needToken.required()) {
@@ -71,12 +70,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     }
                 }
             }
-        } catch (BaseException e) {
-            e.printStackTrace();
-            //token发生异常 返回登录页面
-            httpServletResponse.sendRedirect("/login");
-            return false;
-        }
         return true;
     }
 
