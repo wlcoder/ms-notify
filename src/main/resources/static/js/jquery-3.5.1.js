@@ -10864,6 +10864,15 @@ jQuery.noConflict = function( deep ) {
 if ( typeof noGlobal === "undefined" ) {
 	window.jQuery = window.$ = jQuery;
 }
+//自定义异常信息： 跳转到登录页面
+	jQuery.ajaxSetup({
+		statusCode:{
+			666:function(data){
+				alert(data.responseText);
+				window.location.href="/login";
+			}
+		}
+	})
 
 
 
