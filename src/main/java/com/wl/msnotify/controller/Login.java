@@ -46,7 +46,7 @@ public class Login {
             SysUser user = sysUserService.findUser(username, password);
             if (null != user) {
                 user.setPassword(password);
-                String token = JwtUtil.generatorToken(user, 60);
+                String token = JwtUtil.generatorToken(user, 60*60);
                 //token 保存在redis中
                 redisUtil.set("ms_notify_token", token);
                 return ResultUtil.ok().data("msg", token).message("登录成功");
